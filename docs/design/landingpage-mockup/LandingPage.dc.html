@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Landing page" description="One-scroll public site: hero, season facts, what to expect, four registration paths, footer." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+<style>html{scroll-behavior:smooth}@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}body{margin:0;background:var(--ink-900)}</style>
+</helmet>
+<div style="background:var(--surface-page);color:var(--text-body);font-family:var(--font-body);overflow-x:hidden">
+<header style="position:sticky;top:0;z-index:20;height:72px;background:rgba(8,8,10,.92);backdrop-filter:blur(6px);border-bottom:1px solid rgba(242,234,224,.18)">
+<div style="max-width:1180px;margin:0 auto;padding:0 24px;height:100%;display:flex;align-items:center;gap:24px">
+<a href="#top" style="display:flex;align-items:center;gap:10px;text-decoration:none"><img src="assets/logo-barn-shield.png" alt="Barn League Hockey" style="height:44px;width:auto"></a>
+<nav style="display:flex;align-items:center;gap:24px;margin-left:auto">
+<a href="#facts" style="font-family:var(--font-label);font-weight:600;font-size:.875rem;text-transform:uppercase;letter-spacing:.09em;color:var(--bone-200);text-decoration:none">League</a>
+<a href="#teams" style="font-family:var(--font-label);font-weight:600;font-size:.875rem;text-transform:uppercase;letter-spacing:.09em;color:var(--bone-200);text-decoration:none">Teams</a>
+<a href="mailto:barnleaguehockey@gmail.com" style="font-family:var(--font-condensed);font-weight:600;font-size:.9375rem;letter-spacing:.04em;color:var(--bone-400);text-decoration:none">barnleaguehockey@gmail.com</a>
+<a class="bl-btn bl-btn--primary bl-btn--sm" href="#register">Register</a>
+</nav>
+</div>
+</header>
+<section id="top" class="bl-grain" style="position:relative;min-height:clamp(560px,80vh,780px);display:flex;align-items:stretch;background:var(--ink-900)">
+<img src="assets/photo-action.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%;filter:grayscale(.25) contrast(1.08) brightness(.86)">
+<div style="position:absolute;inset:0;background:var(--scrim-full)"></div>
+<div style="position:relative;width:100%;max-width:1180px;margin:0 auto;padding:112px 24px 72px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;flex-wrap:wrap;gap:16px 40px;justify-content:space-between;align-items:baseline">
+<p class="bl-eyebrow" style="margin:0;color:var(--bone-400);max-width:34ch">Built on 20+ years of hockey, friendship &amp; good competition.</p>
+<p class="bl-eyebrow" style="margin:0;color:var(--red-400)">3 founding teams. 1 league. Lots of great hockey.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:28px;max-width:820px;margin-top:auto">
+<img src="assets/logo-barn-league-hockey.png" alt="Barn League Hockey" style="width:min(420px,70vw);height:auto;mix-blend-mode:screen">
+<h1 style="font-family:var(--font-display);font-size:var(--text-display-1);line-height:.9;letter-spacing:.04em;color:var(--bone-100);margin:0">Adult rec hockey league</h1>
+<p style="font-family:var(--font-body);font-style:italic;font-weight:600;text-transform:uppercase;font-size:clamp(1.125rem,2.4vw,1.75rem);letter-spacing:.02em;color:var(--bone-200);margin:0">Real hockey. Real people. Real fun.</p>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px">
+<a class="bl-btn bl-btn--primary bl-btn--lg" href="#register">Register to play</a>
+<a class="bl-btn bl-btn--ghost bl-btn--onDark bl-btn--lg" href="#teams">Meet the teams</a>
+</div>
+</div>
+</div>
+</section>
+<div id="facts" class="bl-statrail {{ factsToneClass }}">
+<div class="bl-statrail__cell"><span class="bl-statrail__icon"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i></span><span class="bl-statrail__eyebrow">Season</span><span class="bl-statrail__headline">Sept 2026 – Mar 2027</span><span class="bl-statrail__note">Season starts September 2026, runs through March 2027</span></div>
+<div class="bl-statrail__cell"><span class="bl-statrail__icon"><i class="fa-solid fa-warehouse" aria-hidden="true"></i></span><span class="bl-statrail__eyebrow">Game day</span><span class="bl-statrail__headline">Sundays</span><span class="bl-statrail__note">At Palmerston Arena</span></div>
+<div class="bl-statrail__cell"><span class="bl-statrail__icon"><i class="fa-solid fa-hockey-puck" aria-hidden="true"></i></span><span class="bl-statrail__eyebrow">Ice time</span><span class="bl-statrail__headline">Over 60 minutes</span><span class="bl-statrail__note">Of gameplay per game</span></div>
+<div class="bl-statrail__cell"><span class="bl-statrail__icon"><i class="fa-solid fa-user-shield" aria-hidden="true"></i></span><span class="bl-statrail__eyebrow">Between the pipes</span><span class="bl-statrail__headline">Goalies always welcome</span></div>
+<div class="bl-statrail__cell"><span class="bl-statrail__icon"><i class="fa-solid fa-users" aria-hidden="true"></i></span><span class="bl-statrail__eyebrow">Roster</span><span class="bl-statrail__headline">Players &amp; spares</span><span class="bl-statrail__note">Full-season players and spares welcome</span></div>
+<div class="bl-statrail__cell"><span class="bl-statrail__icon"><i class="fa-solid fa-handshake" aria-hidden="true"></i></span><span class="bl-statrail__eyebrow">Sign up</span><span class="bl-statrail__headline">Team or solo</span><span class="bl-statrail__note">Join a founding team, or register as an individual</span></div>
+</div>
+<div class="bl-grain" style="position:relative;height:clamp(300px,44vh,440px);overflow:hidden;background:var(--ink-900)">
+<img src="assets/photo-bench-laughs.png" alt="Players laughing on the bench between shifts" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;filter:grayscale(.25) contrast(1.08) brightness(.86)">
+<div style="position:absolute;inset:0;background:var(--scrim-bottom)"></div>
+<div style="position:relative;height:100%;max-width:1180px;margin:0 auto;padding:0 24px 40px;display:flex;align-items:flex-end">
+<p style="margin:0;font-family:var(--font-body);font-style:italic;font-weight:600;text-transform:uppercase;font-size:clamp(1rem,2.1vw,1.5rem);line-height:1.25;letter-spacing:.02em;color:var(--bone-100);max-width:28ch">The stories after the game are usually <span style="color:var(--red-400)">better</span> than the game itself.</p>
+</div>
+</div>
+<section style="padding:80px 24px">
+<div style="max-width:1180px;margin:0 auto;display:grid;gap:48px 64px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));align-items:start">
+<div>
+<div class="bl-sectionhead"><span class="bl-sectionhead__eyebrow">How we play</span><h2 class="bl-sectionhead__title">What to expect</h2><span class="bl-sectionhead__rule"></span></div>
+<ul class="bl-checklist">
+<li class="bl-checklist__item"><span class="bl-checklist__mark" aria-hidden="true">✔</span><span>Competitive, respectful, and fun environment</span></li>
+<li class="bl-checklist__item"><span class="bl-checklist__mark" aria-hidden="true">✔</span><span>All skill levels welcome</span></li>
+<li class="bl-checklist__item"><span class="bl-checklist__mark" aria-hidden="true">✔</span><span>Strong focus on sportsmanship</span></li>
+<li class="bl-checklist__item"><span class="bl-checklist__mark" aria-hidden="true">✔</span><span>A league built for people who love the game</span></li>
+<li class="bl-checklist__item"><span class="bl-checklist__mark" aria-hidden="true">✔</span><span>We all work tomorrow.</span></li>
+</ul>
+</div>
+<div class="bl-card bl-card--plate" style="padding:32px">
+<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+<span class="bl-iconbtn bl-iconbtn--solid bl-iconbtn--circle bl-iconbtn--lg" aria-hidden="true"><i class="fa-solid fa-dollar-sign"></i></span>
+<h3 style="font-family:var(--font-display);text-transform:uppercase;font-size:1.75rem;line-height:1;margin:0">League fees</h3>
+</div>
+<p style="margin:0 0 12px">Affordable league fees. Final cost is determined by total registration.</p>
+<div class="bl-starrule" aria-hidden="true" style="margin:16px 0"><span class="bl-starrule__line"></span><span class="bl-starrule__star">★</span><span class="bl-starrule__line"></span></div>
+<p style="margin:0;font-family:var(--font-label);font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-accent)">A $100 e-transfer deposit holds your spot.</p>
+</div>
+</div>
+</section>
+<section id="teams" class="bl-grain" style="position:relative;background:var(--ink-900);padding:80px 24px;overflow:hidden">
+<img src="assets/photo-huddle.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(.25) contrast(1.08) brightness(.86)">
+<div style="position:absolute;inset:0;background:var(--scrim-flat)"></div>
+<div style="position:relative;max-width:1180px;margin:0 auto">
+<div class="bl-sectionhead bl-sectionhead--onDark"><span class="bl-sectionhead__eyebrow">Choose your path</span><h2 class="bl-sectionhead__title">Meet the teams</h2><span class="bl-sectionhead__rule"></span></div>
+<div style="display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+<div data-team="rockets" style="display:flex;flex-direction:column;gap:16px">
+<div class="bl-crest"><img class="bl-crest__logo" src="assets/team-rockets.png" alt="Rockets crest"><span class="bl-crest__meta">Founding team</span><span class="bl-crest__name">Rockets</span><a class="bl-btn bl-btn--primary bl-btn--block" href="../player-registration/PlayerRegistration.dc.html?team=rockets#register">Register for the Rockets</a></div>
+<p style="margin:0;font-size:.875rem;line-height:1.4;color:var(--bone-500)">We'll take the request. Balanced teams come first, so placement is not a guarantee.</p>
+</div>
+<div data-team="shockers" style="display:flex;flex-direction:column;gap:16px">
+<div class="bl-crest"><img class="bl-crest__logo" src="assets/team-shockers.png" alt="Shockers crest"><span class="bl-crest__meta">Founding team</span><span class="bl-crest__name">Shockers</span><a class="bl-btn bl-btn--primary bl-btn--block" href="../player-registration/PlayerRegistration.dc.html?team=shockers#register">Register for the Shockers</a></div>
+<p style="margin:0;font-size:.875rem;line-height:1.4;color:var(--bone-500)">We'll take the request. Balanced teams come first, so placement is not a guarantee.</p>
+</div>
+<div data-team="hornets" style="display:flex;flex-direction:column;gap:16px">
+<div class="bl-crest"><img class="bl-crest__logo" src="assets/team-hornets.png" alt="Hornets crest"><span class="bl-crest__meta">Founding team</span><span class="bl-crest__name">Hornets</span><a class="bl-btn bl-btn--primary bl-btn--block" href="../player-registration/PlayerRegistration.dc.html?team=hornets#register">Register for the Hornets</a></div>
+<p style="margin:0;font-size:.875rem;line-height:1.4;color:var(--bone-500)">We'll take the request. Balanced teams come first, so placement is not a guarantee.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div class="bl-crest" style="background:var(--ink-700);justify-content:space-between">
+<div style="display:flex;flex-direction:column;align-items:center;gap:16px;padding:12px 0 4px">
+<span class="bl-iconbtn bl-iconbtn--solid bl-iconbtn--circle bl-iconbtn--lg" aria-hidden="true"><i class="fa-solid fa-user"></i></span>
+<span class="bl-crest__meta" style="color:var(--red-400)">No team yet</span>
+<span class="bl-crest__name" style="max-width:12ch">Join as an individual</span>
+</div>
+<a class="bl-btn bl-btn--primary bl-btn--block" href="../player-registration/PlayerRegistration.dc.html?team=individual#register">Place me on a team</a>
+</div>
+<p style="margin:0;font-size:.875rem;line-height:1.4;color:var(--bone-500)">Tell us who you know. We'll slot you where the league needs you.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="register" style="padding:80px 24px">
+<div style="max-width:840px;margin:0 auto">
+<div class="bl-sectionhead"><span class="bl-sectionhead__eyebrow">One form, four paths</span><h2 class="bl-sectionhead__title">Register to play</h2><span class="bl-sectionhead__rule"></span></div>
+<div class="bl-card" style="background:var(--surface-sunken);padding:32px">
+<p style="margin:0 0 24px;max-width:64ch">Please complete all fields. This information helps us build balanced teams, communicate league information, and meet insurance requirements.</p>
+<div style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+<a class="bl-btn bl-btn--secondary" href="../player-registration/PlayerRegistration.dc.html?team=rockets#register">Rockets</a>
+<a class="bl-btn bl-btn--secondary" href="../player-registration/PlayerRegistration.dc.html?team=shockers#register">Shockers</a>
+<a class="bl-btn bl-btn--secondary" href="../player-registration/PlayerRegistration.dc.html?team=hornets#register">Hornets</a>
+<a class="bl-btn bl-btn--secondary" href="../player-registration/PlayerRegistration.dc.html?team=individual#register">Individual</a>
+</div>
+<div class="bl-starrule" aria-hidden="true" style="margin:28px 0"><span class="bl-starrule__line"></span><span class="bl-starrule__star">★</span><span class="bl-starrule__line"></span></div>
+<div style="display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;justify-content:space-between">
+<p style="margin:0;font-size:.9375rem;color:var(--text-muted);max-width:46ch">A $100 e-transfer deposit holds your spot. Send it to <span style="font-variant-numeric:tabular-nums;color:var(--text-body)">HughTylerShannon@gmail.com</span> with your full name as the memo.</p>
+<a class="bl-btn bl-btn--primary bl-btn--lg" href="../player-registration/PlayerRegistration.dc.html#register">Start the form</a>
+</div>
+</div>
+</div>
+</section>
+<div class="bl-brush"><p class="bl-brush__text">We all work tomorrow.</p></div>
+<footer style="background:var(--ink-900);color:var(--bone-200);padding:56px 24px 64px">
+<div style="max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:24px 48px;align-items:center;justify-content:space-between">
+<div style="display:flex;align-items:center;gap:16px">
+<span class="bl-iconbtn bl-iconbtn--solid bl-iconbtn--circle" aria-hidden="true"><i class="fa-solid fa-envelope"></i></span>
+<div>
+<p class="bl-eyebrow" style="margin:0 0 4px;color:var(--bone-400)">Questions or ready to join?</p>
+<a href="mailto:barnleaguehockey@gmail.com" class="on-dark" style="font-family:var(--font-condensed);font-weight:600;font-size:1.25rem;letter-spacing:.02em">barnleaguehockey@gmail.com</a>
+</div>
+</div>
+<p style="margin:0;font-family:var(--font-condensed);text-transform:uppercase;letter-spacing:.08em;font-size:.875rem;color:var(--bone-500)">★ Barn League Hockey · Palmerston Arena · 2026–27</p>
+</div>
+</footer>
+<sc-if value="{{ stickyCta }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;left:0;right:0;bottom:0;z-index:30;padding:12px 16px;background:rgba(8,8,10,.94);backdrop-filter:blur(6px);border-top:1px solid rgba(242,234,224,.18)"><a class="bl-btn bl-btn--primary bl-btn--block bl-btn--lg" href="#register">Register to play</a></div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900},&quot;factsTone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;dark&quot;,&quot;light&quot;],&quot;default&quot;:&quot;dark&quot;,&quot;tsType&quot;:&quot;\&quot;dark\&quot; | \&quot;light\&quot;&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;stickyRegisterCta&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const tone = this.props.factsTone ?? "dark";
+    return {
+      factsToneClass: tone === "light" ? "bl-statrail--light" : "",
+      stickyCta: this.props.stickyRegisterCta ?? false
+    };
+  }
+}
+</script>
+</body>
+</html>

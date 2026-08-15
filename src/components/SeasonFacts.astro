@@ -1,0 +1,18 @@
+---
+import { landing } from "../content/landing";
+---
+
+<div id="facts" class="bl-statrail">
+  {
+    landing.facts.map((fact) => (
+      <div class="bl-statrail__cell">
+        <span class="bl-statrail__icon">
+          <i class={`fa-solid ${fact.icon}`} aria-hidden="true" />
+        </span>
+        <span class="bl-statrail__eyebrow">{fact.eyebrow}</span>
+        <span class="bl-statrail__headline">{fact.headline}</span>
+        {fact.note ? <span class="bl-statrail__note">{fact.note}</span> : null}
+      </div>
+    ))
+  }
+</div>

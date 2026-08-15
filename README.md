@@ -9,14 +9,23 @@ Production: [https://blh.hutch.fail](https://blh.hutch.fail)
 ```bash
 make tokens/mint   # fills .env from .env.bootstrap
 npm install
-npm run dev
+make dev
 ```
+
+The site is a static one-pager. Preview it locally:
+
+- `make dev` — Astro at [http://127.0.0.1:4321/](http://127.0.0.1:4321/) (`ASTRO_HOST` / `ASTRO_PORT` override host and port)
+- `make preview` — production build, then the same URL via `astro preview`
+- `make mock` — serve the design mock at [http://127.0.0.1:4174/LandingPage.dc.html](http://127.0.0.1:4174/LandingPage.dc.html) for side-by-side comparison
+- `./scripts/preview-local.sh` — `npm ci` if needed, then `make dev`. Pass `--with-mock` to also start `make mock`
+
+Team paths stay on this page: `/?team=rockets#register`, `/?team=shockers#register`, `/?team=hornets#register`, `/?team=individual#register`.
 
 Useful targets:
 
-- `npm run check` — Prettier + `astro check`
-- `npm test` — Vitest
-- `npm run build` — static `dist/`
+- `make check` — Prettier + `astro check`
+- `make test` — Vitest
+- `make build` — static `dist/`
 - `make tokens/mint` — mint a least-privilege Cloudflare deploy token into `.env`
 - `make secrets/sync` — copy allowlisted `.env` keys to GitHub Actions secrets
 

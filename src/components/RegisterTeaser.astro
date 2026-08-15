@@ -1,0 +1,63 @@
+---
+import { landing } from "../content/landing";
+import { TEAM_PREFERENCES } from "../lib/team-preference";
+
+const foundingTeams = TEAM_PREFERENCES.filter((id) => id !== "individual");
+---
+
+<section id="register" class="register">
+  <div class="register__inner">
+    <div class="bl-sectionhead">
+      <span class="bl-sectionhead__eyebrow">{landing.register.eyebrow}</span>
+      <h2 class="bl-sectionhead__title">{landing.register.heading}</h2>
+      <span class="bl-sectionhead__rule"></span>
+    </div>
+    <div class="bl-card register__card">
+      <p class="register__intro">{landing.register.intro}</p>
+      <div class="register__paths">
+        {
+          foundingTeams.map((id) => (
+            <a
+              class="bl-btn bl-btn--secondary"
+              href={`/?team=${id}#register`}
+              data-team={id}
+              data-team-cta={id}
+              aria-pressed="false"
+            >
+              <span class="selected-mark" aria-hidden="true">
+                <i class="fa-solid fa-check" />
+              </span>
+              {landing.register.pathLabels[id]}
+            </a>
+          ))
+        }
+        <a
+          class="bl-btn bl-btn--secondary"
+          href="/?team=individual#register"
+          data-team-cta="individual"
+          aria-pressed="false"
+        >
+          <span class="selected-mark" aria-hidden="true">
+            <i class="fa-solid fa-check"></i>
+          </span>
+          {landing.register.pathLabels.individual}
+        </a>
+      </div>
+      <div class="bl-starrule" aria-hidden="true" style="margin: 28px 0">
+        <span class="bl-starrule__line"></span>
+        <span class="bl-starrule__star">★</span>
+        <span class="bl-starrule__line"></span>
+      </div>
+      <div class="register__deposit-row">
+        <p class="register__deposit">
+          A $100 e-transfer deposit holds your spot. Send it to{" "}
+          <span class="register__inbox">{landing.depositInbox}</span> with your full
+          name as the memo.
+        </p>
+        <a class="bl-btn bl-btn--primary bl-btn--lg" href="#register"
+          >{landing.cta.startForm}</a
+        >
+      </div>
+    </div>
+  </div>
+</section>

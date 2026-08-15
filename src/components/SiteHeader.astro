@@ -1,0 +1,27 @@
+---
+import shield from "../assets/logo-barn-shield.png";
+import { landing } from "../content/landing";
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-header__brand" href="#top">
+      <img
+        src={shield.src}
+        alt="Barn League Hockey"
+        width={shield.width}
+        height={shield.height}
+      />
+    </a>
+    <nav class="site-header__nav" aria-label="Primary">
+      <a class="site-header__link" href="#facts">League</a>
+      <a class="site-header__link" href="#teams">Teams</a>
+      <a class="site-header__email" href={`mailto:${landing.email}`}
+        >{landing.email}</a
+      >
+      <a class="bl-btn bl-btn--primary bl-btn--sm" href="#register"
+        >{landing.cta.headerRegister}</a
+      >
+    </nav>
+  </div>
+</header>

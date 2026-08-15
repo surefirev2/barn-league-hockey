@@ -1,0 +1,45 @@
+---
+import { landing } from "../content/landing";
+---
+
+<section class="expect">
+  <div class="expect__grid">
+    <div>
+      <div class="bl-sectionhead">
+        <span class="bl-sectionhead__eyebrow">{landing.expect.eyebrow}</span>
+        <h2 class="bl-sectionhead__title">{landing.expect.heading}</h2>
+        <span class="bl-sectionhead__rule"></span>
+      </div>
+      <ul class="bl-checklist">
+        {
+          landing.expect.items.map((item) => (
+            <li class="bl-checklist__item">
+              <span class="bl-checklist__mark" aria-hidden="true">
+                ✔
+              </span>
+              <span>{item}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    <div class="bl-card bl-card--plate fees-card">
+      <div class="fees-card__head">
+        <span
+          class="bl-iconbtn bl-iconbtn--solid bl-iconbtn--circle bl-iconbtn--lg"
+          aria-hidden="true"
+        >
+          <i class="fa-solid fa-dollar-sign"></i>
+        </span>
+        <h3 class="fees-card__title">{landing.expect.feesHeading}</h3>
+      </div>
+      <p>{landing.expect.fees}</p>
+      <div class="bl-starrule" aria-hidden="true" style="margin: 16px 0">
+        <span class="bl-starrule__line"></span>
+        <span class="bl-starrule__star">★</span>
+        <span class="bl-starrule__line"></span>
+      </div>
+      <p class="fees-card__deposit">{landing.expect.deposit}</p>
+    </div>
+  </div>
+</section>

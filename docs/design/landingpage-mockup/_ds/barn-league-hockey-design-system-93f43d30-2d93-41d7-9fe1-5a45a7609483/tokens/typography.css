@@ -1,0 +1,36 @@
+:root{
+  --font-display:"Anton","Arial Narrow",Impact,sans-serif;      /* caps only */
+  --font-label:"Oswald","Arial Narrow",sans-serif;               /* caps UI labels */
+  --font-body:"Barlow","Helvetica Neue",Arial,sans-serif;
+  --font-condensed:"Barlow Condensed","Arial Narrow",sans-serif; /* dense data */
+
+  /* type scale — display sizes are caps-height driven, so they run large */
+  --text-hero:clamp(3.25rem,9vw,7.5rem);
+  --text-display-1:clamp(2.5rem,6vw,4.5rem);
+  --text-display-2:clamp(2rem,4.5vw,3.25rem);
+  --text-title:1.75rem;
+  --text-subtitle:1.25rem;
+  --text-lead:1.1875rem;
+  --text-body-lg:1.0625rem;
+  --text-body-md:1rem;
+  --text-body-sm:.9375rem;
+  --text-label:.875rem;
+  --text-label-sm:.75rem;
+  --text-micro:.6875rem;
+
+  --leading-display:.9;
+  --leading-tight:1.08;
+  --leading-snug:1.3;
+  --leading-body:1.55;
+  --leading-loose:1.7;
+
+  --tracking-display:.01em;
+  --tracking-label:.09em;
+  --tracking-micro:.14em;
+  --tracking-body:0;
+
+  --weight-body:400;
+  --weight-emphasis:600;
+  --weight-label:600;
+  --weight-heavy:700;
+}

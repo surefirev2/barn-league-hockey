@@ -1,0 +1,100 @@
+---
+import type { ImageMetadata } from "astro";
+import huddle from "../assets/photo-huddle.png";
+import teamRockets from "../assets/team-rockets.png";
+import teamShockers from "../assets/team-shockers.png";
+import teamHornets from "../assets/team-hornets.png";
+import { landing } from "../content/landing";
+import type { TeamPreference } from "../lib/team-preference";
+
+const crests: Partial<Record<TeamPreference, ImageMetadata>> = {
+  rockets: teamRockets,
+  shockers: teamShockers,
+  hornets: teamHornets,
+};
+---
+
+<section id="teams" class="teams bl-grain">
+  <img
+    class="teams__photo"
+    src={huddle.src}
+    alt=""
+    width={huddle.width}
+    height={huddle.height}
+  />
+  <div class="teams__scrim"></div>
+  <div class="teams__inner">
+    <div class="bl-sectionhead bl-sectionhead--onDark">
+      <span class="bl-sectionhead__eyebrow">{landing.teams.eyebrow}</span>
+      <h2 class="bl-sectionhead__title">{landing.teams.heading}</h2>
+      <span class="bl-sectionhead__rule"></span>
+    </div>
+    <div class="teams__grid">
+      {
+        landing.teams.paths.map((path) => {
+          const crest = crests[path.id];
+          const href = `/?team=${path.id}#register`;
+          if (path.founding && crest) {
+            return (
+              <div class="team-card" data-team={path.id}>
+                <div class="bl-crest">
+                  <img
+                    class="bl-crest__logo"
+                    src={crest.src}
+                    alt={`${path.title} crest`}
+                  />
+                  <span class="bl-crest__meta">{path.kicker}</span>
+                  <span class="bl-crest__name">{path.title}</span>
+                  <a
+                    class="bl-btn bl-btn--primary bl-btn--block"
+                    href={href}
+                    data-team-cta={path.id}
+                    aria-pressed="false"
+                  >
+                    <span class="selected-mark" aria-hidden="true">
+                      <i class="fa-solid fa-check" />
+                    </span>
+                    {path.button}
+                  </a>
+                </div>
+                <p class="team-card__note">{landing.teams.foundingNote}</p>
+              </div>
+            );
+          }
+          return (
+            <div class="team-card">
+              <div class="bl-crest team-card__crest--individual">
+                <div class="team-card__individual-top">
+                  <span
+                    class="bl-iconbtn bl-iconbtn--solid bl-iconbtn--circle bl-iconbtn--lg"
+                    aria-hidden="true"
+                  >
+                    <i class="fa-solid fa-user" />
+                  </span>
+                  <span class="bl-crest__meta team-card__kicker--individual">
+                    {path.kicker}
+                  </span>
+                  <span class="bl-crest__name team-card__name--individual">
+                    {path.title}
+                  </span>
+                </div>
+                <a
+                  class="bl-btn bl-btn--primary bl-btn--block"
+                  href={href}
+                  data-team-cta={path.id}
+                  aria-pressed="false"
+                >
+                  <span class="selected-mark" aria-hidden="true">
+                    <i class="fa-solid fa-check" />
+                  </span>
+                  {path.button}
+                </a>
+              </div>
+              <p class="team-card__note">{landing.teams.individualNote}</p>
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,43 @@
+---
+import photoAction from "../assets/photo-action.png";
+import wordmark from "../assets/logo-barn-league-hockey.png";
+import { landing } from "../content/landing";
+---
+
+<section id="top" class="hero bl-grain">
+  <img
+    class="hero__photo"
+    src={photoAction.src}
+    alt=""
+    width={photoAction.width}
+    height={photoAction.height}
+  />
+  <div class="hero__scrim"></div>
+  <div class="hero__inner">
+    <div class="hero__eyebrows">
+      <p class="bl-eyebrow hero__eyebrow">{landing.eyebrows.left}</p>
+      <p class="bl-eyebrow hero__eyebrow hero__eyebrow--accent">
+        {landing.eyebrows.right}
+      </p>
+    </div>
+    <div class="hero__copy">
+      <img
+        class="hero__wordmark"
+        src={wordmark.src}
+        alt=""
+        width={wordmark.width}
+        height={wordmark.height}
+      />
+      <h1 class="hero__title">{landing.title}</h1>
+      <p class="hero__tagline">{landing.tagline}</p>
+      <div class="hero__actions">
+        <a class="bl-btn bl-btn--primary bl-btn--lg" href="#register"
+          >{landing.cta.register}</a
+        >
+        <a class="bl-btn bl-btn--ghost bl-btn--onDark bl-btn--lg" href="#teams">
+          {landing.cta.meetTeams}
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

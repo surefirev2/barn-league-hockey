@@ -1,0 +1,23 @@
+---
+import { landing } from "../content/landing";
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__contact">
+      <span
+        class="bl-iconbtn bl-iconbtn--solid bl-iconbtn--circle"
+        aria-hidden="true"
+      >
+        <i class="fa-solid fa-envelope"></i>
+      </span>
+      <div>
+        <p class="bl-eyebrow site-footer__eyebrow">{landing.footer.eyebrow}</p>
+        <a href={`mailto:${landing.email}`} class="on-dark site-footer__email"
+          >{landing.email}</a
+        >
+      </div>
+    </div>
+    <p class="site-footer__meta">{landing.footer.meta}</p>
+  </div>
+</footer>
