@@ -1,7 +1,7 @@
 # Barn League Hockey — Design Handoff
 
-**Status:** Draft for implementation  
-**Date:** 2026-08-15  
+**Status:** Draft for implementation
+**Date:** 2026-08-15
 **Surface:** One public page. One registration form. One generated PDF.
 
 This document tells design and engineering how the public site should look, read, and collect registrations. Product requirements stay in [docs/roadmap/prd.md](../roadmap/prd.md). Architecture stays in [docs/roadmap/adr.md](../roadmap/adr.md).
@@ -327,8 +327,8 @@ Payments are **out of scope** (PRD). The form still has to explain the $100 hold
 
 Static copy in the section (not fields):
 
-> **$100 deposit to secure your spot.**  
-> E-transfer $100 to `HughTylerShannon@gmail.com`.  
+> **$100 deposit to secure your spot.**
+> E-transfer $100 to `HughTylerShannon@gmail.com`.
 > Use your full name as the e-transfer memo.
 
 If `Pending`, the success screen repeats this. If `Paid`, success says the league will match the e-transfer to this registration ID.
@@ -381,7 +381,7 @@ Letterhead:
 - Team path → that team's colors and name (`ROCKETS BARN LEAGUE HOCKEY`, etc.)
 - Individual → league letterhead (`BARN LEAGUE HOCKEY`)
 
-Filename in Drive (ADR): `Last, First - {registrationId}.pdf`  
+Filename in Drive (ADR): `Last, First - {registrationId}.pdf`
 Object in R2: identifier-first, season prefix.
 
 The PDF is a legal-ish record, not a flyer. High contrast, no photo hero, no grain. Include the registration ID in the header of every page.

@@ -1,6 +1,6 @@
 # ADR: Adult Hockey League Website Platform Architecture
 
-**Status:** Accepted  
+**Status:** Accepted
 **Date:** 2026-08-15
 
 ## Context
