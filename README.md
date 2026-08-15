@@ -1,4 +1,44 @@
-# template-template
+# Barn League Hockey
+
+Public website and registration system for an adult hockey league.
+
+Production: [https://blh.hutch.fail](https://blh.hutch.fail)
+
+## Local development
+
+```bash
+cp .env.example .env   # fill Cloudflare account ID and API token
+npm install
+npm run dev
+```
+
+Useful targets:
+
+- `npm run check` — Prettier + `astro check`
+- `npm test` — Vitest
+- `npm run build` — static `dist/`
+- `make secrets/sync` — copy allowlisted `.env` keys to GitHub Actions secrets
+
+## Deploy
+
+GitHub Actions deploys from `main` via Wrangler to Workers Static Assets on `blh.hutch.fail`.
+
+1. Copy `.env.example` to `.env` and fill `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`.
+2. The token needs **Workers Scripts Edit** and **DNS Edit** on zone `hutch.fail`.
+3. Run `make secrets/sync`.
+4. Merge to `main`. The [deploy workflow](.github/workflows/deploy.yaml) runs `wrangler deploy`.
+
+Do not enable Cloudflare Workers Builds. GitHub Actions is the deploy path.
+
+## Roadmap
+
+Product direction lives in [docs/roadmap](docs/roadmap/README.md):
+
+- [PRD](docs/roadmap/prd.md) — what we are building, acceptance criteria, and deferred scope
+- [ADR](docs/roadmap/adr.md) — accepted platform architecture (Astro, Workers Static Assets, D1/R2, queues, Google Drive projection)
+- [Design handoff](docs/design/handoff.md) — one-pager, team vs individual registration, form fields ([PDF](docs/design/handoff.pdf))
+
+## Template sync
 
 Template repository that syncs selected files to dependent repos via GitHub Actions. The workflow runs [surefirev2/repo-sync-action](https://github.com/surefirev2/repo-sync-action); config lives in [`.github/template-sync.yml`](.github/template-sync.yml). On push to `main` (or when opening a PR), the action clones each configured downstream repo, copies only the allowlisted paths, and opens or updates a PR with the changes.
 

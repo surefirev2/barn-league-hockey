@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Barn League Hockey — Design Handoff</title>
+<style>
+  @page { size: Letter; margin: 18mm 16mm; }
+  :root {
+    --ink: #140c08;
+    --muted: #5c534c;
+    --rule: #cfc4b6;
+    --red: #9d1a1f;
+    --ice: #f7f4f0;
+  }
+  html, body {
+    background: white;
+    color: var(--ink);
+    font: 11.5pt/1.45 "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  body { margin: 0; padding: 24px 32px 48px; max-width: 800px; }
+  h1 {
+    font: 800 28pt/1.05 "Barlow Condensed", "Arial Narrow", sans-serif;
+    letter-spacing: 0.02em;
+    margin: 0 0 8px;
+    color: var(--ink);
+  }
+  h2 {
+    font: 800 16pt/1.2 "Barlow Condensed", "Arial Narrow", sans-serif;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-top: 2px solid var(--red);
+    padding-top: 14px;
+    margin: 28px 0 10px;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 12.5pt;
+    margin: 18px 0 8px;
+    page-break-after: avoid;
+  }
+  p, li { orphans: 3; widows: 3; }
+  a { color: var(--red); text-decoration: none; }
+  hr { border: 0; border-top: 1px solid var(--rule); margin: 16px 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10pt;
+    margin: 8px 0 16px;
+    page-break-inside: auto;
+  }
+  th, td {
+    border: 1px solid var(--rule);
+    padding: 5px 7px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: var(--ice); font-weight: 600; }
+  tr { page-break-inside: avoid; }
+  code {
+    font: 9.5pt/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: var(--ice);
+    padding: 0 3px;
+  }
+  pre {
+    background: var(--ice);
+    border: 1px solid var(--rule);
+    padding: 10px 12px;
+    font-size: 9.5pt;
+    white-space: pre-wrap;
+    page-break-inside: avoid;
+  }
+  blockquote {
+    margin: 8px 0 16px;
+    padding: 6px 12px;
+    border-left: 3px solid var(--red);
+    color: var(--muted);
+  }
+  strong { font-weight: 650; }
+</style>
+</head>
+<body>
+<h1>Barn League Hockey — Design Handoff</h1>
+<p><strong>Status:</strong> Draft for implementation<br />
+<strong>Date:</strong> 2026-08-15<br />
+<strong>Surface:</strong> One public page. One registration form. One generated PDF.</p>
+<p>This document tells design and engineering how the public site should look, read, and collect registrations. Product requirements stay in <a href="../roadmap/prd.md">docs/roadmap/prd.md</a>. Architecture stays in <a href="../roadmap/adr.md">docs/roadmap/adr.md</a>.</p>
+<p>Paper originals are archived in <a href="source/">source/</a>.</p>
+<hr />
+<h2>1. Job to be done</h2>
+<p>A player on a phone, or a parent/partner filling it in at the kitchen table, should be able to:</p>
+<ol>
+<li>Understand what The Barn League is.</li>
+<li>Pick <strong>Rockets</strong>, <strong>Shockers</strong>, <strong>Hornets</strong>, or <strong>join as an individual</strong>.</li>
+<li>Complete every field required for rostering, insurance, and the $100 deposit.</li>
+<li>Leave with a registration ID and a clear &ldquo;what happens next.&rdquo;</li>
+</ol>
+<p>League admins should later find the same record as a PDF plus a Sheet row. That pipeline is an ADR concern. This spec only defines the player-facing page and the data the form must capture.</p>
+<hr />
+<h2>2. Product shape</h2>
+<p>The public site is a <strong>single scrolling page</strong>, not a multi-page brochure.</p>
+<table>
+<thead>
+<tr>
+<th>PRD page name</th>
+<th>One-pager treatment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Home</td>
+<td>Hero</td>
+</tr>
+<tr>
+<td>League information</td>
+<td>Facts + what to expect</td>
+</tr>
+<tr>
+<td>Registration</td>
+<td><code>#register</code> section on the same page</td>
+</tr>
+<tr>
+<td>Rules / sportsmanship</td>
+<td>Compact &ldquo;How we play&rdquo; block</td>
+</tr>
+<tr>
+<td>Contact</td>
+<td>Footer + deposit instructions</td>
+</tr>
+</tbody>
+</table>
+<p>Do not add a CMS, player login, or a separate <code>/register</code> app shell. In-page anchors are enough.</p>
+<pre><code class="language-text">/?team=rockets#register
+/?team=shockers#register
+/?team=hornets#register
+/?team=individual#register
+/#register
+</code></pre>
+<p>Clicking a team card sets <code>team</code> in the query string, scrolls to <code>#register</code>, and selects that path in the form. The player can still change it.</p>
+<hr />
+<h2>3. Brand</h2>
+<h3>3.1 League (page chrome, individual path, default PDF)</h3>
+<p>The flyer is the league face: barn red, cream type, charcoal ice, wood grain, distressed display type. Translate that into <strong>marketing sections</strong>. Do not put distressed textures behind form fields.</p>
+<table>
+<thead>
+<tr>
+<th>Token</th>
+<th>Hex</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>barn-red</code></td>
+<td><code>#9D1A1F</code></td>
+<td>Primary CTA, selected states, emphasis</td>
+</tr>
+<tr>
+<td><code>barn-red-deep</code></td>
+<td><code>#7F1610</code></td>
+<td>Footer bar, hover on primary</td>
+</tr>
+<tr>
+<td><code>cream</code></td>
+<td><code>#F0E8DD</code></td>
+<td>Display type on dark, paper surfaces</td>
+</tr>
+<tr>
+<td><code>ink</code></td>
+<td><code>#140C08</code></td>
+<td>Page background, body on cream</td>
+</tr>
+<tr>
+<td><code>charcoal</code></td>
+<td><code>#1D1210</code></td>
+<td>Secondary surfaces</td>
+</tr>
+<tr>
+<td><code>wood</code></td>
+<td><code>#7F7261</code></td>
+<td>Hairline rules, muted icons</td>
+</tr>
+<tr>
+<td><code>ice</code></td>
+<td><code>#F7F4F0</code></td>
+<td>Form canvas</td>
+</tr>
+<tr>
+<td><code>danger</code></td>
+<td><code>#AC1011</code></td>
+<td>Validation errors</td>
+</tr>
+</tbody>
+</table>
+<h3>3.2 Founding teams (cards + selected form accent + PDF letterhead)</h3>
+<p>Same insurance form, three crests. On the web: one form, team color as an accent only.</p>
+<table>
+<thead>
+<tr>
+<th>Team</th>
+<th>Primary</th>
+<th>Accent</th>
+<th>On</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Rockets</strong></td>
+<td><code>#0A0A0A</code> black</td>
+<td><code>#DF4000</code> orange</td>
+<td>Black card, orange type/rules</td>
+</tr>
+<tr>
+<td><strong>Shockers</strong></td>
+<td><code>#021F4B</code> navy</td>
+<td><code>#F15B00</code> orange</td>
+<td>Navy card, orange type/rules</td>
+</tr>
+<tr>
+<td><strong>Hornets</strong></td>
+<td><code>#0F2111</code> forest</td>
+<td><code>#E8C318</code> gold</td>
+<td>Forest card, gold type/rules</td>
+</tr>
+<tr>
+<td><strong>Individual</strong></td>
+<td>League ink</td>
+<td><code>barn-red</code></td>
+<td>League card, no fake fourth crest</td>
+</tr>
+</tbody>
+</table>
+<p>Do not invent a fourth team identity for unassigned players.</p>
+<h3>3.3 Type</h3>
+<table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Face</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Display / hero</td>
+<td><strong>Barlow Condensed</strong> ExtraBold</td>
+<td>Athletic condensed. Not Inter, Helvetica, or Impact.</td>
+</tr>
+<tr>
+<td>Tagline</td>
+<td><strong>Fraunces</strong> Italic 600</td>
+<td>&ldquo;Real hockey. Real people. Real fun.&rdquo; and &ldquo;Still love the game?&rdquo;</td>
+</tr>
+<tr>
+<td>Body / UI</td>
+<td><strong>Source Sans 3</strong> 400/600</td>
+<td>Form labels, paragraphs, buttons</td>
+</tr>
+<tr>
+<td>Data</td>
+<td>Source Sans 3 with <code>font-variant-numeric: tabular-nums</code></td>
+<td>Dates, phone, registration ID</td>
+</tr>
+</tbody>
+</table>
+<p>Load from a font CDN or self-host. Display type may be slightly tracking-out on the hero (<code>letter-spacing: 0.04em</code>). Body stays normal tracking.</p>
+<h3>3.4 Texture and decoration</h3>
+<ul>
+<li>Hero: full-bleed rink / barn-roof photo, dark scrim, grain at ~8% opacity.</li>
+<li>Section rules: thin cream or wood lines with a star separator, as on the flyer.</li>
+<li>Team cards: flat color fields, crest if we have vector art, otherwise type-led crests. No glassmorphism, no purple gradients, no blob shapes.</li>
+<li>Form: quiet. Light canvas, 1px ink/15% borders, no wood grain on inputs.</li>
+</ul>
+<h3>3.5 Motion</h3>
+<p>Minimal-functional. Smooth-scroll to <code>#register</code> (respect <code>prefers-reduced-motion</code>). 150–250ms color/border transitions on cards and the primary button. No scroll-jacking, no hero parallax that hides the CTA on mobile.</p>
+<hr />
+<h2>4. Page map</h2>
+<p>Sticky top bar on desktop: wordmark, in-page links (League, Teams, Register), contact email. On small screens: wordmark + a persistent <strong>Register</strong> button.</p>
+<h3>4.1 Hero</h3>
+<p>Dark photo. League crest (barn-door shield with crossed sticks) centered or left-aligned on desktop, stacked on mobile.</p>
+<p>Copy, from the flyer, in this order:</p>
+<ul>
+<li>Eyebrow left: <code>Built on 20+ years of hockey, friendship &amp; good competition.</code></li>
+<li>Eyebrow right (desktop): <code>3 founding teams. 1 league. Lots of great hockey.</code></li>
+<li>Title: <code>ADULT REC HOCKEY LEAGUE</code></li>
+<li>Tagline: <code>Real hockey. Real people. Real fun.</code></li>
+<li>Primary button: <code>Register to play</code> → <code>#register</code></li>
+<li>Secondary text button: <code>Meet the teams</code> → <code>#teams</code></li>
+</ul>
+<p>Do not add a fake &ldquo;Watch the reel&rdquo; or stock-photo player mosaic.</p>
+<h3>4.2 League facts</h3>
+<p>A six-cell <strong>scoreboard</strong>, not a SaaS feature grid. Two columns on mobile, three on desktop. Line icons, cream type on charcoal.</p>
+<table>
+<thead>
+<tr>
+<th>Icon</th>
+<th>Copy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Calendar</td>
+<td>Season starts September 2026, runs through March 2027</td>
+</tr>
+<tr>
+<td>Arena</td>
+<td>Sundays at Palmerston Arena</td>
+</tr>
+<tr>
+<td>Crossed sticks</td>
+<td>Over 60 minutes of gameplay per game</td>
+</tr>
+<tr>
+<td>Goalie mask</td>
+<td>Goalies always welcome</td>
+</tr>
+<tr>
+<td>People</td>
+<td>Full-season players and spares welcome</td>
+</tr>
+<tr>
+<td>Handshake</td>
+<td>Join a founding team, or register as an individual</td>
+</tr>
+</tbody>
+</table>
+<h3>4.3 How we play</h3>
+<p>Heading: <code>What to expect</code></p>
+<ul>
+<li>Competitive, respectful, and fun environment</li>
+<li>All skill levels welcome</li>
+<li>Strong focus on sportsmanship</li>
+<li>A league built for people who love the game</li>
+<li>We all work tomorrow.</li>
+</ul>
+<p>Fees, from the flyer:</p>
+<blockquote>
+<p>Affordable league fees. Final cost is determined by total registration.</p>
+</blockquote>
+<p>Then one line on the deposit (details live in the form):</p>
+<blockquote>
+<p>A $100 e-transfer deposit holds your spot.</p>
+</blockquote>
+<h3>4.4 Teams (<code>#teams</code>)</h3>
+<p>Four equal cards.</p>
+<table>
+<thead>
+<tr>
+<th>Card</th>
+<th>Kicker</th>
+<th>Title</th>
+<th>Button</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rockets</td>
+<td>Founding team</td>
+<td>Rockets</td>
+<td>Register for the Rockets</td>
+</tr>
+<tr>
+<td>Shockers</td>
+<td>Founding team</td>
+<td>Shockers</td>
+<td>Register for the Shockers</td>
+</tr>
+<tr>
+<td>Hornets</td>
+<td>Founding team</td>
+<td>Hornets</td>
+<td>Register for the Hornets</td>
+</tr>
+<tr>
+<td>Individual</td>
+<td>No team yet</td>
+<td>Join as an individual</td>
+<td>Place me on a team</td>
+</tr>
+</tbody>
+</table>
+<p>Under every founding-team button, 14px muted note:</p>
+<blockquote>
+<p>We&rsquo;ll take the request. Balanced teams come first, so placement is not a guarantee.</p>
+</blockquote>
+<p>Individual card note:</p>
+<blockquote>
+<p>Tell us who you know. We&rsquo;ll slot you where the league needs you.</p>
+</blockquote>
+<h3>4.5 Register (<code>#register</code>)</h3>
+<p>See §5–§8.</p>
+<h3>4.6 Footer</h3>
+<p>Dark bar. Envelope + <code>barnleaguehockey@gmail.com</code>. Motto in Fraunces italic: <code>We all work tomorrow.</code> No social icons unless the league actually uses them.</p>
+<hr />
+<h2>5. Registration UX</h2>
+<p>One form. Four entry paths. The path is a required field named <code>teamPreference</code>.</p>
+<pre><code class="language-text">Rockets | Shockers | Hornets | Individual
+</code></pre>
+<p>Visual: a 2×2 segmented control on mobile, 4-up on desktop, using team colors for the selected segment.</p>
+<p><strong>Do not split this into four forms or four PDFs.</strong> The insurance PDFs in <code>source/</code> are the same form with different letterheads. Digitally, letterhead follows <code>teamPreference</code> at PDF time.</p>
+<h3>5.1 Layout</h3>
+<p>Form sits on <code>ice</code> inside a max-width ~720px column, centered. Section headers are small all-caps Source Sans 3 with a 3px team-accent rule on the left.</p>
+<p>Section order:</p>
+<ol>
+<li>Path (team or individual)</li>
+<li>Player information</li>
+<li>Emergency contact and address</li>
+<li>Connections</li>
+<li>Hockey experience</li>
+<li>Availability</li>
+<li>Deposit</li>
+<li>Acknowledgements and signature</li>
+</ol>
+<p>Progress is the section list itself, not a wizard. Do not paginate unless a usability test says the single scroll is failing on mobile. Default is one scroll.</p>
+<h3>5.2 Success</h3>
+<p>On <code>POST /api/registrations</code> success, replace the form with a confirmation panel:</p>
+<ul>
+<li><code>You're in.</code></li>
+<li>Registration ID in tabular numerals (the immutable ID from the ADR)</li>
+<li>Team path they chose</li>
+<li>If deposit is <code>pending</code>: repeat e-transfer instructions</li>
+<li>Contact: <code>barnleaguehockey@gmail.com</code></li>
+<li>Link: <code>Register someone else</code> (resets the form)</li>
+</ul>
+<p>Do <strong>not</strong> promise a confirmation email. Email is deferred in the PRD. Everything the player needs must be on this screen.</p>
+<hr />
+<h2>6. Field dictionary</h2>
+<p>Sources: <a href="source/form-player-registration.pdf">player registration</a> and the three <a href="source/form-insurance-shockers.pdf">insurance forms</a>. Combined into one submit. Storage names are suggestions for D1; the Worker may map them.</p>
+<p>All fields required unless marked optional.</p>
+<h3>6.1 Path</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>UI</th>
+<th>Values</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>teamPreference</code></td>
+<td>Segmented control</td>
+<td><code>rockets</code> <code>shockers</code> <code>hornets</code> <code>individual</code></td>
+<td>Required. Pre-filled from <code>?team=</code></td>
+</tr>
+</tbody>
+</table>
+<p>Insurance paper fields <code>Current Team</code> and <code>Team Role / Position</code> are <strong>not</strong> separate inputs. They are <code>teamPreference</code> and <code>primaryPosition</code>.</p>
+<h3>6.2 Player information</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>UI</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>firstName</code></td>
+<td>Text</td>
+<td>1–80 chars</td>
+</tr>
+<tr>
+<td><code>lastName</code></td>
+<td>Text</td>
+<td>1–80 chars</td>
+</tr>
+<tr>
+<td><code>dateOfBirth</code></td>
+<td>Date</td>
+<td><code>YYYY-MM-DD</code>, adult (18+ on season start 2026-09-01)</td>
+</tr>
+<tr>
+<td><code>phone</code></td>
+<td>Tel</td>
+<td>Required, store E.164 if parseable, else trimmed string</td>
+</tr>
+<tr>
+<td><code>email</code></td>
+<td>Email</td>
+<td>Valid email</td>
+</tr>
+</tbody>
+</table>
+<p>Layout: first/last on one row, DOB/phone on one row, email full width.</p>
+<h3>6.3 Emergency contact and address</h3>
+<p>From the insurance form. Required for coverage.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>UI</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>emergencyName</code></td>
+<td>Text</td>
+<td>1–120 chars</td>
+</tr>
+<tr>
+<td><code>emergencyRelationship</code></td>
+<td>Text</td>
+<td>1–80 chars</td>
+</tr>
+<tr>
+<td><code>emergencyPhone</code></td>
+<td>Tel</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>emergencyEmail</code></td>
+<td>Email</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td><code>addressLine</code></td>
+<td>Text</td>
+<td>1–200 chars</td>
+</tr>
+<tr>
+<td><code>city</code></td>
+<td>Text</td>
+<td>1–80 chars</td>
+</tr>
+<tr>
+<td><code>province</code></td>
+<td>Text, default <code>ON</code></td>
+<td>2–40 chars</td>
+</tr>
+<tr>
+<td><code>postalCode</code></td>
+<td>Text</td>
+<td>Canadian <code>A1A 1A1</code> (accept with or without space, store canonical)</td>
+</tr>
+</tbody>
+</table>
+<p>Layout: name full width; relationship + phone on one row; email full width; address full width; city / province / postal on one row.</p>
+<h3>6.4 Connections</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>UI</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>knowsSomeoneInLeague</code></td>
+<td>Yes / No</td>
+<td>Required</td>
+</tr>
+<tr>
+<td><code>knownPlayerNames</code></td>
+<td>Text</td>
+<td>Required if yes; hidden if no</td>
+</tr>
+<tr>
+<td><code>preferredTeammates</code></td>
+<td>Text</td>
+<td>Optional</td>
+</tr>
+</tbody>
+</table>
+<p>Helper under preferred teammates (paper copy, lightly tightened):</p>
+<blockquote>
+<p>We&rsquo;ll consider requests. Balanced, competitive teams come first, so we can&rsquo;t guarantee placement.</p>
+</blockquote>
+<h3>6.5 Hockey experience</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>UI</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>highestLevel</code></td>
+<td>Single select</td>
+<td><code>learn_to_play</code> <code>house_rec</code> <code>select_rep</code> <code>junior_senior_college</code></td>
+</tr>
+<tr>
+<td><code>primaryPosition</code></td>
+<td>Single select</td>
+<td><code>forward</code> <code>defence</code> <code>goaltender</code> <code>no_preference</code></td>
+</tr>
+<tr>
+<td><code>secondaryPosition</code></td>
+<td>Single select</td>
+<td>Same values, plus empty. Optional.</td>
+</tr>
+<tr>
+<td><code>yearsPlayed</code></td>
+<td>Text</td>
+<td>Required, short (e.g. <code>12 years</code>)</td>
+</tr>
+<tr>
+<td><code>timeSinceRegular</code></td>
+<td>Text</td>
+<td>Required, short (e.g. <code>2 seasons</code>)</td>
+</tr>
+<tr>
+<td><code>abilityRating</code></td>
+<td>Single select</td>
+<td><code>beginner</code> <code>recreational</code> <code>intermediate</code> <code>experienced</code> <code>advanced</code></td>
+</tr>
+</tbody>
+</table>
+<p>Paper labels:</p>
+<ul>
+<li>Highest level: Learn to Play / Beginner; House League / Recreational; Select / Rep / Travel; Junior / Senior / College / Other</li>
+<li>Ability: Beginner; Recreational; Intermediate; Experienced; Advanced</li>
+</ul>
+<p>Use radio groups, not dropdowns, so the full set is visible. Primary and secondary cannot be the same value unless both are <code>no_preference</code>.</p>
+<h3>6.6 Availability</h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>UI</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>participation</code></td>
+<td>Single select</td>
+<td><code>every_week</code> <code>most_weeks</code> <code>half_season</code> <code>spare</code></td>
+</tr>
+<tr>
+<td><code>spareInterest</code></td>
+<td>Yes / No</td>
+<td>Required</td>
+</tr>
+</tbody>
+</table>
+<p>Paper labels for participation:</p>
+<ul>
+<li>Every week / Almost every week</li>
+<li>Most weeks</li>
+<li>Approximately half the season</li>
+<li>Occasional / Spare player</li>
+</ul>
+<p>Spare question copy:</p>
+<blockquote>
+<p>Are you interested in being contacted as a spare when another team is short players?</p>
+</blockquote>
+<h3>6.7 Deposit</h3>
+<p>Payments are <strong>out of scope</strong> (PRD). The form still has to explain the $100 hold and record whether they already sent it.</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>UI</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>depositStatus</code></td>
+<td>Yes / Pending</td>
+<td>Required. Labels: <code>Paid</code> / <code>Pending</code></td>
+</tr>
+</tbody>
+</table>
+<p>Static copy in the section (not fields):</p>
+<blockquote>
+<p><strong>$100 deposit to secure your spot.</strong><br />
+E-transfer $100 to <code>HughTylerShannon@gmail.com</code>.<br />
+Use your full name as the e-transfer memo.</p>
+</blockquote>
+<p>If <code>Pending</code>, the success screen repeats this. If <code>Paid</code>, success says the league will match the e-transfer to this registration ID.</p>
+<h3>6.8 Acknowledgements and signature</h3>
+<p>Show the five insurance statements as <strong>individual required checkboxes</strong>, then the registration accuracy line as a sixth. Do not hide them behind a single &ldquo;I agree.&rdquo;</p>
+<ol>
+<li>I confirm that the information provided on this form is accurate and complete.</li>
+<li>I understand that this information will be used for league administration and to obtain insurance coverage for Barn League Hockey.</li>
+<li>I authorize Barn League Hockey to collect, use, and disclose this information to our insurance provider as required for coverage.</li>
+<li>I understand that insurance coverage is provided for registered players only and is subject to the terms and conditions of the league&rsquo;s insurance policy.</li>
+<li>I agree to abide by all league rules and policies. I acknowledge that participation in hockey involves inherent risks of injury.</li>
+<li>I understand this information will also be used to build balanced teams.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>UI</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ackAccuracy</code> … <code>ackBalancedTeams</code></td>
+<td>Checkbox</td>
+<td>All six required</td>
+</tr>
+<tr>
+<td><code>signatureName</code></td>
+<td>Text</td>
+<td>Must match <code>firstName</code> + <code>lastName</code> ignoring extra whitespace and case</td>
+</tr>
+<tr>
+<td><code>signatureImage</code></td>
+<td>Canvas</td>
+<td>Optional drawn signature, PNG, max ~200kb after compress</td>
+</tr>
+<tr>
+<td><code>signedAt</code></td>
+<td>Hidden</td>
+<td>Set client-side ISO timestamp; server also stamps</td>
+</tr>
+</tbody>
+</table>
+<p>Submit label: <code>Submit registration</code></p>
+<p>Disable the button until the six acknowledgements are checked and required fields pass client validation. Still validate on the server.</p>
+<hr />
+<h2>7. Validation, abuse, and empty states</h2>
+<ul>
+<li>Client validation on blur and on submit. Inline error text under the field, <code>barn-red</code>, no toast-only errors.</li>
+<li>Server repeats every rule. Never trust the client for age, email, or acknowledgements.</li>
+<li>Duplicate email in the same season: allow submit (families share devices) but the Worker may flag it. Do not silently drop the second registration. Exact duplicate policy can land in implementation; UI copy if rejected: <code>This email already has a registration for 2026-27. Email barnleaguehockey@gmail.com if you need a change.</code></li>
+<li>Turnstile or equivalent on submit (PRD: basic abuse protection). Invisible if possible.</li>
+<li>Network failure: keep the form filled, show <code>We couldn't save that. Check your connection and try again.</code> Never clear the form on a 5xx.</li>
+</ul>
+<hr />
+<h2>8. Generated PDF</h2>
+<p>One PDF per successful registration (PRD). Combine the two paper forms into a single document.</p>
+<p>Suggested pages:</p>
+<ol>
+<li><strong>League registration</strong> — path, player info, connections, experience, availability, deposit status, registration ID.</li>
+<li><strong>Insurance</strong> — player info, emergency/address, six acknowledgements, signature name, drawn signature if present, date.</li>
+</ol>
+<p>Letterhead:</p>
+<ul>
+<li>Team path → that team&rsquo;s colors and name (<code>ROCKETS BARN LEAGUE HOCKEY</code>, etc.)</li>
+<li>Individual → league letterhead (<code>BARN LEAGUE HOCKEY</code>)</li>
+</ul>
+<p>Filename in Drive (ADR): <code>Last, First - {registrationId}.pdf</code><br />
+Object in R2: identifier-first, season prefix.</p>
+<p>The PDF is a legal-ish record, not a flyer. High contrast, no photo hero, no grain. Include the registration ID in the header of every page.</p>
+<hr />
+<h2>9. Content inventory (locked copy)</h2>
+<p>Use this copy unless a human edits it. Do not substitute generic sports-league marketing.</p>
+<p><strong>Taglines</strong></p>
+<ul>
+<li>Still love the game? So do we.</li>
+<li>Real hockey. Real people. Real fun.</li>
+<li>We all work tomorrow.</li>
+</ul>
+<p><strong>Value line (hero supporting, optional)</strong></p>
+<p>From the player form, not the flyer:</p>
+<ul>
+<li>Good hockey. Good people. Good laughs. Friendly competition.</li>
+<li>And the stories after the game are usually better than the game itself.</li>
+</ul>
+<p><strong>Contact</strong></p>
+<ul>
+<li>League: <code>barnleaguehockey@gmail.com</code></li>
+<li>Deposit e-transfer: <code>HughTylerShannon@gmail.com</code></li>
+</ul>
+<p><strong>Instructional bar (form top)</strong></p>
+<blockquote>
+<p>Please complete all fields. This information helps us build balanced teams, communicate league information, and meet insurance requirements.</p>
+</blockquote>
+<hr />
+<h2>10. Breakpoints</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Width</th>
+<th>Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Small</td>
+<td>&lt; 640px</td>
+<td>Sticky Register CTA. Team cards stack. Form single column. Hero type scales down, no truncated headlines.</td>
+</tr>
+<tr>
+<td>Medium</td>
+<td>640–960px</td>
+<td>Facts 2×3. Team cards 2×2.</td>
+</tr>
+<tr>
+<td>Large</td>
+<td>&gt; 960px</td>
+<td>Facts 6-across or 3×2. Team cards 4-across. Form stays 720px; page margins grow.</td>
+</tr>
+</tbody>
+</table>
+<p>Touch targets ≥ 44px. Radio/checkbox labels are the hit area, not the 16px control.</p>
+<hr />
+<h2>11. Accessibility</h2>
+<ul>
+<li>One <code>h1</code>: the league title in the hero.</li>
+<li>Team names are visible text, not color alone. Selected path also has a check or <code>Selected</code> label.</li>
+<li>Form errors referenced with <code>aria-describedby</code>. Focus the first invalid field on failed submit.</li>
+<li>Contrast: cream on barn-red and cream on navy/forest/black must pass WCAG AA for large type. Body text is ink on ice, not cream on wood photo.</li>
+<li>Signature canvas has a keyboard alternative: the typed <code>signatureName</code> is sufficient to submit.</li>
+</ul>
+<hr />
+<h2>12. What this is not</h2>
+<p>Do not add, even if it would look finished:</p>
+<ul>
+<li>Payment processing (e-transfer is manual)</li>
+<li>Account creation</li>
+<li>Live schedule, standings, or roster pages</li>
+<li>Admin UI</li>
+<li>Email send</li>
+<li>A separate insurance form step</li>
+<li>CMS-managed pages</li>
+<li>Dark-mode toggle as a v1 requirement (the page is already dark marketing + light form)</li>
+</ul>
+<hr />
+<h2>13. Source artifacts</h2>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="source/flyer-the-barn-league.pdf">source/flyer-the-barn-league.pdf</a></td>
+<td>League positioning, season facts, motto</td>
+</tr>
+<tr>
+<td><a href="source/form-player-registration.pdf">source/form-player-registration.pdf</a></td>
+<td>Player, connections, experience, availability, deposit</td>
+</tr>
+<tr>
+<td><a href="source/form-insurance-rockets.pdf">source/form-insurance-rockets.pdf</a></td>
+<td>Insurance fields + Rockets letterhead</td>
+</tr>
+<tr>
+<td><a href="source/form-insurance-shockers.pdf">source/form-insurance-shockers.pdf</a></td>
+<td>Insurance fields + Shockers letterhead</td>
+</tr>
+<tr>
+<td><a href="source/form-insurance-hornets.pdf">source/form-insurance-hornets.pdf</a></td>
+<td>Insurance fields + Hornets letterhead</td>
+</tr>
+</tbody>
+</table>
+<p>PNGs of the same art sit next to the PDFs.</p>
+<hr />
+<h2>14. Open questions</h2>
+<p>Implementation can start without these. Flag before launch.</p>
+<ol>
+<li>Adult cutoff: 18 as of 2026-09-01, or a different date?</li>
+<li>Keep the deposit inbox <code>HughTylerShannon@gmail.com</code>, or a league-only address?</li>
+<li>Legal review of the six acknowledgement lines.</li>
+<li>Do returning players need a &ldquo;I already have a jersey / number&rdquo; field? Not on paper today.</li>
+<li>Vector crests: the attached art is raster. Someone still needs SVG wordmarks for the three teams and the league shield.</li>
+</ol>
+</body>
+</html>
