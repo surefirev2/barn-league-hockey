@@ -1,0 +1,818 @@
+---
+import { landing } from "../content/landing";
+import {
+  ABILITY_RATINGS,
+  ABILITY_LABELS,
+  ACK_FIELDS,
+  HIGHEST_LEVELS,
+  HIGHEST_LEVEL_LABELS,
+  PARTICIPATION,
+  PARTICIPATION_LABELS,
+  POSITIONS,
+  POSITION_LABELS,
+  TEAM_PATH_LABELS,
+} from "../worker/registrations/schema";
+import { TEAM_PREFERENCES } from "../lib/team-preference";
+
+const acknowledgements: Record<(typeof ACK_FIELDS)[number], string> = {
+  ackAccuracy:
+    "I confirm that the information provided on this form is accurate and complete.",
+  ackAdminUse:
+    "I understand that this information will be used for league administration and to obtain insurance coverage for Barn League Hockey.",
+  ackDisclosure:
+    "I authorize Barn League Hockey to collect, use, and disclose this information to our insurance provider as required for coverage.",
+  ackCoverage:
+    "I understand that insurance coverage is provided for registered players only and is subject to the terms and conditions of the league's insurance policy.",
+  ackRisk:
+    "I agree to abide by all league rules and policies. I acknowledge that participation in hockey involves inherent risks of injury.",
+  ackBalancedTeams:
+    "I understand this information will also be used to build balanced teams.",
+};
+
+const pathMeta: Record<(typeof TEAM_PREFERENCES)[number], string> = {
+  rockets: "Founding team",
+  shockers: "Founding team",
+  hornets: "Founding team",
+  individual: "No team yet",
+};
+---
+
+<dialog
+  id="register-dialog"
+  class="register-dialog"
+  aria-labelledby="register-dialog-title"
+  data-team="individual"
+>
+  <div class="register-dialog__inner">
+    <header class="register-dialog__header bl-grain">
+      <div class="register-dialog__header-copy">
+        <h2 id="register-dialog-title" class="register-dialog__title">
+          New player registration form
+        </h2>
+        <p class="register-dialog__lede">{landing.register.intro}</p>
+      </div>
+      <button
+        type="button"
+        class="bl-iconbtn bl-iconbtn--ghost bl-iconbtn--circle register-dialog__close"
+        data-register-close
+        aria-label="Close registration form"
+      >
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </header>
+    <div class="register-dialog__body">
+      <form
+        id="registration-form"
+        class="register-dialog__form"
+        novalidate
+        data-register-form
+      >
+        <input
+          type="hidden"
+          name="teamPreference"
+          id="teamPreference"
+          value=""
+        />
+
+        <section>
+          <div class="bl-formsection">
+            <span class="bl-formsection__disc"
+              ><i class="fa-solid fa-hockey-puck" aria-hidden="true"></i></span
+            >
+            <h3 class="bl-formsection__bar">Your path</h3>
+          </div>
+          <p class="register-dialog__section-note">
+            Pick a founding team or register as an individual. Required — you
+            can change it before you submit.
+          </p>
+          <div class="path-grid" role="group" aria-label="Registration path">
+            {
+              TEAM_PREFERENCES.map((id) => (
+                <button
+                  type="button"
+                  class="path-pick"
+                  data-team={id}
+                  data-path-pick={id}
+                  aria-pressed="false"
+                >
+                  <span class="path-pick__name">{TEAM_PATH_LABELS[id]}</span>
+                  <span class="path-pick__meta">{pathMeta[id]}</span>
+                  <span class="path-pick__selected">✔ Selected</span>
+                </button>
+              ))
+            }
+          </div>
+          <span class="bl-error" id="teamPreference-error"></span>
+        </section>
+
+        <section>
+          <div class="bl-formsection">
+            <span class="bl-formsection__disc"
+              ><i class="fa-solid fa-user" aria-hidden="true"></i></span
+            >
+            <h3 class="bl-formsection__bar">Player information</h3>
+          </div>
+          <div class="register-dialog__grid register-dialog__grid--2">
+            <div class="bl-field">
+              <label class="bl-label" for="firstName"
+                >First name<span class="bl-label__req">*</span></label
+              >
+              <input
+                class="bl-input"
+                id="firstName"
+                name="firstName"
+                maxlength="80"
+                autocomplete="given-name"
+                aria-describedby="firstName-error"
+              />
+              <span class="bl-error" id="firstName-error"></span>
+            </div>
+            <div class="bl-field">
+              <label class="bl-label" for="lastName"
+                >Last name<span class="bl-label__req">*</span></label
+              >
+              <input
+                class="bl-input"
+                id="lastName"
+                name="lastName"
+                maxlength="80"
+                autocomplete="family-name"
+                aria-describedby="lastName-error"
+              />
+              <span class="bl-error" id="lastName-error"></span>
+            </div>
+            <div class="bl-field">
+              <label class="bl-label" for="dateOfBirth"
+                >Date of birth<span class="bl-label__req">*</span><span
+                  class="bl-label__hint">(YYYY-MM-DD)</span
+                ></label
+              >
+              <input
+                class="bl-input"
+                id="dateOfBirth"
+                name="dateOfBirth"
+                type="date"
+                style="font-variant-numeric:tabular-nums"
+                aria-describedby="dateOfBirth-help dateOfBirth-error"
+              />
+              <span class="bl-help" id="dateOfBirth-help"
+                >Players must be 18 or older on 2026-09-01.</span
+              >
+              <span class="bl-error" id="dateOfBirth-error"></span>
+            </div>
+            <div class="bl-field">
+              <label class="bl-label" for="phone"
+                >Phone number<span class="bl-label__req">*</span></label
+              >
+              <input
+                class="bl-input"
+                id="phone"
+                name="phone"
+                type="tel"
+                autocomplete="tel"
+                style="font-variant-numeric:tabular-nums"
+                aria-describedby="phone-error"
+              />
+              <span class="bl-error" id="phone-error"></span>
+            </div>
+          </div>
+          <div class="bl-field" style="margin-top: 20px">
+            <label class="bl-label" for="email"
+              >Email address<span class="bl-label__req">*</span></label
+            >
+            <input
+              class="bl-input"
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              aria-describedby="email-error"
+            />
+            <span class="bl-error" id="email-error"></span>
+          </div>
+        </section>
+
+        <section>
+          <div class="bl-formsection">
+            <span class="bl-formsection__disc"
+              ><i class="fa-solid fa-phone" aria-hidden="true"></i></span
+            >
+            <h3 class="bl-formsection__bar">Emergency contact &amp; address</h3>
+          </div>
+          <p class="register-dialog__section-note">
+            Required for insurance coverage.
+          </p>
+          <div class="bl-field">
+            <label class="bl-label" for="emergencyName"
+              >Emergency contact name<span class="bl-label__req">*</span></label
+            >
+            <input
+              class="bl-input"
+              id="emergencyName"
+              name="emergencyName"
+              maxlength="120"
+              aria-describedby="emergencyName-error"
+            />
+            <span class="bl-error" id="emergencyName-error"></span>
+          </div>
+          <div
+            class="register-dialog__grid register-dialog__grid--2"
+            style="margin-top: 20px"
+          >
+            <div class="bl-field">
+              <label class="bl-label" for="emergencyRelationship"
+                >Relationship to player<span class="bl-label__req">*</span
+                ></label
+              >
+              <input
+                class="bl-input"
+                id="emergencyRelationship"
+                name="emergencyRelationship"
+                maxlength="80"
+                aria-describedby="emergencyRelationship-error"
+              />
+              <span class="bl-error" id="emergencyRelationship-error"></span>
+            </div>
+            <div class="bl-field">
+              <label class="bl-label" for="emergencyPhone"
+                >Emergency phone number<span class="bl-label__req">*</span
+                ></label
+              >
+              <input
+                class="bl-input"
+                id="emergencyPhone"
+                name="emergencyPhone"
+                type="tel"
+                style="font-variant-numeric:tabular-nums"
+                aria-describedby="emergencyPhone-error"
+              />
+              <span class="bl-error" id="emergencyPhone-error"></span>
+            </div>
+          </div>
+          <div class="bl-field" style="margin-top: 20px">
+            <label class="bl-label" for="emergencyEmail"
+              >Emergency contact email<span class="bl-label__hint"
+                >(optional)</span
+              ></label
+            >
+            <input
+              class="bl-input"
+              id="emergencyEmail"
+              name="emergencyEmail"
+              type="email"
+              aria-describedby="emergencyEmail-error"
+            />
+            <span class="bl-error" id="emergencyEmail-error"></span>
+          </div>
+          <div class="bl-field" style="margin-top: 20px">
+            <label class="bl-label" for="addressLine"
+              >Mailing address<span class="bl-label__req">*</span></label
+            >
+            <input
+              class="bl-input"
+              id="addressLine"
+              name="addressLine"
+              maxlength="200"
+              autocomplete="street-address"
+              aria-describedby="addressLine-error"
+            />
+            <span class="bl-error" id="addressLine-error"></span>
+          </div>
+          <div
+            class="register-dialog__grid register-dialog__grid--3"
+            style="margin-top: 20px"
+          >
+            <div class="bl-field">
+              <label class="bl-label" for="city"
+                >City<span class="bl-label__req">*</span></label
+              >
+              <input
+                class="bl-input"
+                id="city"
+                name="city"
+                maxlength="80"
+                aria-describedby="city-error"
+              />
+              <span class="bl-error" id="city-error"></span>
+            </div>
+            <div class="bl-field">
+              <label class="bl-label" for="province"
+                >Province<span class="bl-label__req">*</span></label
+              >
+              <input
+                class="bl-input"
+                id="province"
+                name="province"
+                value="ON"
+                maxlength="40"
+                aria-describedby="province-error"
+              />
+              <span class="bl-error" id="province-error"></span>
+            </div>
+            <div class="bl-field">
+              <label class="bl-label" for="postalCode"
+                >Postal code<span class="bl-label__req">*</span></label
+              >
+              <input
+                class="bl-input"
+                id="postalCode"
+                name="postalCode"
+                placeholder="A1A 1A1"
+                style="font-variant-numeric:tabular-nums;text-transform:uppercase"
+                aria-describedby="postalCode-error"
+              />
+              <span class="bl-error" id="postalCode-error"></span>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <div class="bl-formsection">
+            <span class="bl-formsection__disc"
+              ><i class="fa-solid fa-users" aria-hidden="true"></i></span
+            >
+            <h3 class="bl-formsection__bar">Connections</h3>
+          </div>
+          <fieldset style="border: 0; margin: 0; padding: 0; min-width: 0">
+            <legend class="bl-label" style="padding: 0; margin-bottom: 8px">
+              Do you know anyone currently in the league?<span
+                class="bl-label__req">*</span
+              >
+            </legend>
+            <div class="bl-choicegroup">
+              <label class="bl-check">
+                <input
+                  type="radio"
+                  name="knowsSomeoneInLeague"
+                  value="yes"
+                  data-knows="yes"
+                />
+                <span class="bl-check__box bl-check__box--round"
+                  ><span class="bl-check__dot"></span></span
+                >
+                <span>Yes</span>
+              </label>
+              <label class="bl-check">
+                <input
+                  type="radio"
+                  name="knowsSomeoneInLeague"
+                  value="no"
+                  data-knows="no"
+                />
+                <span class="bl-check__box bl-check__box--round"
+                  ><span class="bl-check__dot"></span></span
+                >
+                <span>No</span>
+              </label>
+            </div>
+            <span class="bl-error" id="knowsSomeoneInLeague-error"></span>
+          </fieldset>
+          <div
+            class="bl-field"
+            data-known-players
+            hidden
+            style="margin-top: 20px"
+          >
+            <label class="bl-label" for="knownPlayerNames"
+              >If yes, please list their name(s)<span class="bl-label__req"
+                >*</span
+              ></label
+            >
+            <input
+              class="bl-input"
+              id="knownPlayerNames"
+              name="knownPlayerNames"
+              aria-describedby="knownPlayerNames-error"
+            />
+            <span class="bl-error" id="knownPlayerNames-error"></span>
+          </div>
+          <div class="bl-field" style="margin-top: 20px">
+            <label class="bl-label" for="preferredTeammates"
+              >Anyone you would prefer to play on the same team with?<span
+                class="bl-label__hint">(optional)</span
+              ></label
+            >
+            <input
+              class="bl-input"
+              id="preferredTeammates"
+              name="preferredTeammates"
+            />
+            <span class="bl-help"
+              >We'll consider requests. Balanced, competitive teams come first,
+              so we can't guarantee placement.</span
+            >
+          </div>
+        </section>
+
+        <section>
+          <div class="bl-formsection">
+            <span class="bl-formsection__disc"
+              ><i class="fa-solid fa-trophy" aria-hidden="true"></i></span
+            >
+            <h3 class="bl-formsection__bar">Hockey experience</h3>
+          </div>
+          <fieldset style="border: 0; margin: 0; padding: 0; min-width: 0">
+            <legend class="bl-label" style="padding: 0; margin-bottom: 8px">
+              Highest level of hockey played<span class="bl-label__req">*</span>
+            </legend>
+            <div class="bl-choicegroup bl-choicegroup--stack">
+              {
+                HIGHEST_LEVELS.map((value) => (
+                  <label class="bl-check">
+                    <input type="radio" name="highestLevel" value={value} />
+                    <span class="bl-check__box bl-check__box--round">
+                      <span class="bl-check__dot" />
+                    </span>
+                    <span>{HIGHEST_LEVEL_LABELS[value]}</span>
+                  </label>
+                ))
+              }
+            </div>
+            <span class="bl-error" id="highestLevel-error"></span>
+          </fieldset>
+          <fieldset
+            style="border: 0; margin: 24px 0 0; padding: 0; min-width: 0"
+          >
+            <legend class="bl-label" style="padding: 0; margin-bottom: 8px">
+              Primary position<span class="bl-label__req">*</span>
+            </legend>
+            <div class="bl-choicegroup">
+              {
+                POSITIONS.map((value) => (
+                  <label class="bl-check">
+                    <input type="radio" name="primaryPosition" value={value} />
+                    <span class="bl-check__box bl-check__box--round">
+                      <span class="bl-check__dot" />
+                    </span>
+                    <span>{POSITION_LABELS[value]}</span>
+                  </label>
+                ))
+              }
+            </div>
+            <span class="bl-error" id="primaryPosition-error"></span>
+          </fieldset>
+          <fieldset
+            style="border: 0; margin: 24px 0 0; padding: 0; min-width: 0"
+          >
+            <legend class="bl-label" style="padding: 0; margin-bottom: 8px">
+              Secondary position<span class="bl-label__hint"
+                >(if applicable)</span
+              >
+            </legend>
+            <div class="bl-choicegroup">
+              {
+                POSITIONS.map((value) => (
+                  <label class="bl-check">
+                    <input
+                      type="radio"
+                      name="secondaryPosition"
+                      value={value}
+                    />
+                    <span class="bl-check__box bl-check__box--round">
+                      <span class="bl-check__dot" />
+                    </span>
+                    <span>{POSITION_LABELS[value]}</span>
+                  </label>
+                ))
+              }
+            </div>
+            <span class="bl-error" id="secondaryPosition-error"></span>
+          </fieldset>
+          <div
+            class="register-dialog__grid register-dialog__grid--2"
+            style="margin-top: 24px"
+          >
+            <div class="bl-field">
+              <label class="bl-label" for="yearsPlayed"
+                >How many years have you played hockey?<span
+                  class="bl-label__req">*</span
+                ></label
+              >
+              <input
+                class="bl-input"
+                id="yearsPlayed"
+                name="yearsPlayed"
+                placeholder="12 years"
+                aria-describedby="yearsPlayed-error"
+              />
+              <span class="bl-error" id="yearsPlayed-error"></span>
+            </div>
+            <div class="bl-field">
+              <label class="bl-label" for="timeSinceRegular"
+                >How long since you played regularly?<span class="bl-label__req"
+                  >*</span
+                ></label
+              >
+              <input
+                class="bl-input"
+                id="timeSinceRegular"
+                name="timeSinceRegular"
+                placeholder="2 seasons"
+                aria-describedby="timeSinceRegular-error"
+              />
+              <span class="bl-error" id="timeSinceRegular-error"></span>
+            </div>
+          </div>
+          <fieldset
+            style="border: 0; margin: 24px 0 0; padding: 0; min-width: 0"
+          >
+            <legend class="bl-label" style="padding: 0; margin-bottom: 8px">
+              How would you rate your current playing ability?<span
+                class="bl-label__req">*</span
+              >
+            </legend>
+            <div class="bl-choicegroup bl-choicegroup--stack">
+              {
+                ABILITY_RATINGS.map((value) => (
+                  <label class="bl-check">
+                    <input type="radio" name="abilityRating" value={value} />
+                    <span class="bl-check__box bl-check__box--round">
+                      <span class="bl-check__dot" />
+                    </span>
+                    <span>{ABILITY_LABELS[value]}</span>
+                  </label>
+                ))
+              }
+            </div>
+            <span class="bl-error" id="abilityRating-error"></span>
+          </fieldset>
+        </section>
+
+        <section>
+          <div class="bl-formsection">
+            <span class="bl-formsection__disc"
+              ><i class="fa-solid fa-calendar-days" aria-hidden="true"
+              ></i></span
+            >
+            <h3 class="bl-formsection__bar">Availability &amp; intentions</h3>
+          </div>
+          <fieldset style="border: 0; margin: 0; padding: 0; min-width: 0">
+            <legend class="bl-label" style="padding: 0; margin-bottom: 8px">
+              How often do you plan to participate?<span class="bl-label__req"
+                >*</span
+              >
+            </legend>
+            <div class="bl-choicegroup bl-choicegroup--stack">
+              {
+                PARTICIPATION.map((value) => (
+                  <label class="bl-check">
+                    <input type="radio" name="participation" value={value} />
+                    <span class="bl-check__box bl-check__box--round">
+                      <span class="bl-check__dot" />
+                    </span>
+                    <span>{PARTICIPATION_LABELS[value]}</span>
+                  </label>
+                ))
+              }
+            </div>
+            <span class="bl-error" id="participation-error"></span>
+          </fieldset>
+          <fieldset
+            style="border: 0; margin: 24px 0 0; padding: 0; min-width: 0"
+          >
+            <legend class="bl-label" style="padding: 0; margin-bottom: 8px">
+              Are you interested in being contacted as a spare when another team
+              is short players?<span class="bl-label__req">*</span>
+            </legend>
+            <div class="bl-choicegroup">
+              <label class="bl-check">
+                <input type="radio" name="spareInterest" value="yes" />
+                <span class="bl-check__box bl-check__box--round"
+                  ><span class="bl-check__dot"></span></span
+                >
+                <span>Yes</span>
+              </label>
+              <label class="bl-check">
+                <input type="radio" name="spareInterest" value="no" />
+                <span class="bl-check__box bl-check__box--round"
+                  ><span class="bl-check__dot"></span></span
+                >
+                <span>No</span>
+              </label>
+            </div>
+            <span class="bl-error" id="spareInterest-error"></span>
+          </fieldset>
+        </section>
+
+        <section>
+          <div class="bl-formsection bl-formsection--dark">
+            <span class="bl-formsection__disc"
+              ><i class="fa-solid fa-dollar-sign" aria-hidden="true"></i></span
+            >
+            <h3 class="bl-formsection__bar">Deposit</h3>
+          </div>
+          <div
+            class="bl-card bl-card--plate"
+            style="padding: 24px; display: flex; flex-direction: column; gap: 16px"
+          >
+            <p
+              style="margin: 0; font-family: var(--font-display); text-transform: uppercase; font-size: 1.5rem; line-height: 1"
+            >
+              $100 deposit to secure your spot
+            </p>
+            <p style="margin: 0">
+              E-transfer $100 to{" "}
+              <strong style="font-variant-numeric: tabular-nums"
+                >{landing.depositInbox}</strong
+              >. Use your full name as the e-transfer memo.
+            </p>
+            <p
+              style="margin: 0; font-family: var(--font-label); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.875rem; color: var(--text-accent)"
+            >
+              Your spot is not confirmed until the deposit is received.
+            </p>
+            <div class="bl-starrule" aria-hidden="true">
+              <span class="bl-starrule__line"></span>
+              <span class="bl-starrule__star">★</span>
+              <span class="bl-starrule__line"></span>
+            </div>
+            <fieldset style="border: 0; margin: 0; padding: 0; min-width: 0">
+              <legend class="bl-label" style="padding: 0; margin-bottom: 8px">
+                Deposit sent?<span class="bl-label__req">*</span>
+              </legend>
+              <div class="bl-choicegroup">
+                <label class="bl-check">
+                  <input type="radio" name="depositStatus" value="paid" />
+                  <span class="bl-check__box bl-check__box--round"
+                    ><span class="bl-check__dot"></span></span
+                  >
+                  <span>Paid</span>
+                </label>
+                <label class="bl-check">
+                  <input type="radio" name="depositStatus" value="pending" />
+                  <span class="bl-check__box bl-check__box--round"
+                    ><span class="bl-check__dot"></span></span
+                  >
+                  <span>Pending</span>
+                </label>
+              </div>
+              <span class="bl-error" id="depositStatus-error"></span>
+            </fieldset>
+          </div>
+        </section>
+
+        <section>
+          <div class="bl-formsection">
+            <span class="bl-formsection__disc"
+              ><i class="fa-solid fa-shield-halved" aria-hidden="true"
+              ></i></span
+            >
+            <h3 class="bl-formsection__bar">
+              Acknowledgements &amp; signature
+            </h3>
+          </div>
+          <div
+            style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 24px"
+          >
+            {
+              ACK_FIELDS.map((name) => (
+                <label class="bl-check">
+                  <input type="checkbox" name={name} value="true" data-ack />
+                  <span class="bl-check__box">
+                    <span class="bl-check__mark">✔</span>
+                  </span>
+                  <span>{acknowledgements[name]}</span>
+                </label>
+              ))
+            }
+          </div>
+          <div class="bl-field">
+            <label class="bl-label" for="signatureName"
+              >Signature — type your full name<span class="bl-label__req"
+                >*</span
+              ></label
+            >
+            <input
+              class="bl-input"
+              id="signatureName"
+              name="signatureName"
+              aria-describedby="signatureName-help signatureName-error"
+            />
+            <span class="bl-help" id="signatureName-help"
+              >Must match the first and last name entered above.</span
+            >
+            <span class="bl-error" id="signatureName-error"></span>
+          </div>
+          <div class="bl-field" style="margin-top: 20px">
+            <span class="bl-label"
+              >Drawn signature<span class="bl-label__hint">(optional)</span
+              ></span
+            >
+            <div class="signature-pad">
+              <canvas id="signature-pad" width="640" height="132"></canvas>
+              <div class="signature-pad__actions">
+                <button
+                  type="button"
+                  class="bl-btn bl-btn--ghost bl-btn--sm"
+                  data-signature-clear
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+          </div>
+          <div id="cf-turnstile" class="cf-turnstile" style="margin-top: 16px">
+          </div>
+          <p class="register-dialog__network-error" data-network-error>
+            We couldn't save that. Check your connection and try again.
+          </p>
+          <div class="register-dialog__submit-bar">
+            <p
+              style="margin: 0; font-size: 0.9375rem; color: var(--text-muted); max-width: 38ch"
+            >
+              All six acknowledgements are required before you can submit.
+            </p>
+            <button
+              type="submit"
+              class="bl-btn bl-btn--primary bl-btn--lg"
+              data-submit
+              disabled
+            >
+              Submit registration
+            </button>
+          </div>
+        </section>
+      </form>
+
+      <div class="register-dialog__success" data-register-success hidden>
+        <div
+          class="bl-card bl-card--plate"
+          style="padding: 40px; display: flex; flex-direction: column; gap: 24px"
+        >
+          <div style="display: flex; align-items: center; gap: 16px">
+            <span
+              class="bl-iconbtn bl-iconbtn--solid bl-iconbtn--circle bl-iconbtn--lg"
+              aria-hidden="true"
+            >
+              <i class="fa-solid fa-circle-check"></i>
+            </span>
+            <h3
+              style="font-family: var(--font-display); text-transform: uppercase; font-size: 2.5rem; line-height: 0.9; margin: 0"
+            >
+              You're in.
+            </h3>
+          </div>
+          <div class="register-dialog__grid register-dialog__grid--2">
+            <div>
+              <p
+                class="bl-eyebrow"
+                style="margin: 0 0 4px; color: var(--text-muted)"
+              >
+                Registration ID
+              </p>
+              <p class="register-success__id" data-success-id></p>
+            </div>
+            <div>
+              <p
+                class="bl-eyebrow"
+                style="margin: 0 0 4px; color: var(--text-muted)"
+              >
+                Your path
+              </p>
+              <p class="register-success__path" data-success-path></p>
+            </div>
+          </div>
+          <div class="bl-starrule" aria-hidden="true">
+            <span class="bl-starrule__line"></span>
+            <span class="bl-starrule__star">★</span>
+            <span class="bl-starrule__line"></span>
+          </div>
+          <div data-success-deposit-pending>
+            <p
+              style="margin: 0 0 8px; font-family: var(--font-label); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.875rem"
+            >
+              Deposit still pending
+            </p>
+            <p style="margin: 0">
+              E-transfer $100 to{" "}
+              <strong style="font-variant-numeric: tabular-nums"
+                >{landing.depositInbox}</strong
+              >{" "}
+              with your full name as the memo. Your spot is not confirmed until the
+              deposit is received.
+            </p>
+          </div>
+          <div data-success-deposit-paid hidden>
+            <p style="margin: 0">
+              We'll match your e-transfer to this registration ID.
+            </p>
+          </div>
+          <p style="margin: 0; color: var(--text-muted)">
+            Questions about this registration? Email{" "}
+            <a href={`mailto:${landing.email}`}>{landing.email}</a> and quote the
+            registration ID above.
+          </p>
+          <div>
+            <button
+              type="button"
+              class="bl-btn bl-btn--secondary"
+              data-register-again
+            >
+              Register someone else
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</dialog>

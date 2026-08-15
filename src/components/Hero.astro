@@ -31,8 +31,10 @@ import { landing } from "../content/landing";
       <h1 class="hero__title">{landing.title}</h1>
       <p class="hero__tagline">{landing.tagline}</p>
       <div class="hero__actions">
-        <a class="bl-btn bl-btn--primary bl-btn--lg" href="#register"
-          >{landing.cta.register}</a
+        <a
+          class="bl-btn bl-btn--primary bl-btn--lg"
+          href="#register"
+          data-open-register>{landing.cta.register}</a
         >
         <a class="bl-btn bl-btn--ghost bl-btn--onDark bl-btn--lg" href="#teams">
           {landing.cta.meetTeams}

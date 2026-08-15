@@ -6,19 +6,23 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "astro dev",
+    "dev": "./scripts/dev.sh",
+    "dev:astro": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
     "check": "prettier --check . && astro check",
     "format": "prettier --write .",
     "test": "vitest run",
-    "deploy": "astro build && wrangler deploy"
+    "deploy": "astro build && wrangler d1 migrations apply barn-league-hockey --remote && wrangler deploy"
   },
   "dependencies": {
-    "astro": "^7.2.2"
+    "astro": "^7.2.2",
+    "pdf-lib": "^1.17.1",
+    "ulid": "^3.0.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@types/node": "^26.2.0",
     "prettier": "^3.9.6",
     "prettier-plugin-astro": "^0.14.1",
     "typescript": "^5.9.2",

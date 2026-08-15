@@ -23,3 +23,7 @@ export function parseTeamPreference(
     ? (normalized as TeamPreference)
     : null;
 }
+
+export function shouldOpenRegisterDialog(hash: string): boolean {
+  return hash.replace(/^#/, "") === "register";
+}

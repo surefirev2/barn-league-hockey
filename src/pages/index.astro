@@ -10,10 +10,9 @@ import RegisterTeaser from "../components/RegisterTeaser.astro";
 import BrushBanner from "../components/BrushBanner.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import StickyRegister from "../components/StickyRegister.astro";
-import photoArena from "../assets/photo-arena.png";
+import PlayerRegistrationForm from "../components/PlayerRegistrationForm.astro";
 import photoBenchLaughs from "../assets/photo-bench-laughs.png";
 import photoHandshake from "../assets/photo-handshake.png";
-import photoFaceoff from "../assets/photo-faceoff.jpg";
 import { landing } from "../content/landing";
 ---
 
@@ -23,18 +22,12 @@ import { landing } from "../content/landing";
     <Hero />
     <SeasonFacts />
     <PhotoBand
-      image={photoArena}
-      alt="Palmerston Arena"
-      objectPosition="center 40%"
-    >
-      <p class="photo-band__quote">{landing.bands.arena}</p>
-    </PhotoBand>
-    <PhotoBand
       image={photoBenchLaughs}
       alt="Players laughing on the bench between shifts"
       objectPosition="center 30%"
       size="story"
     >
+      <p class="photo-band__kicker">{landing.bands.arena}</p>
       <p class="photo-band__quote">
         {landing.storiesBefore}<span class="photo-band__quote-accent"
           >{landing.storiesAccent}</span
@@ -50,18 +43,13 @@ import { landing } from "../content/landing";
       <p class="photo-band__quote">{landing.bands.handshake}</p>
     </PhotoBand>
     <Teams />
-    <PhotoBand
-      image={photoFaceoff}
-      alt="Players lining up for a faceoff"
-      objectPosition="center 35%"
-    >
-      <p class="photo-band__quote">{landing.bands.faceoff}</p>
-    </PhotoBand>
     <RegisterTeaser />
     <BrushBanner />
   </main>
   <SiteFooter />
   <StickyRegister />
+  <PlayerRegistrationForm />
 </BaseLayout>
 
 <script src="../scripts/team-preference-ui.ts"></script>
+<script src="../scripts/registration-form.ts"></script>

@@ -221,6 +221,16 @@ html {
   transform: translateX(-50%);
 }
 
+.photo-band__kicker {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-label);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  font-size: 0.8125rem;
+  color: var(--bone-400);
+}
+
 .photo-band__quote {
   margin: 0;
   font-family: var(--font-body);
@@ -246,13 +256,65 @@ html {
   max-width: var(--container);
   margin: 0 auto;
   display: grid;
-  gap: 48px 64px;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px 40px;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "copy"
+    "photo-a"
+    "photo-b"
+    "fees";
   align-items: start;
 }
 
+.expect__copy {
+  grid-area: copy;
+}
+
+.expect__plate--huddle {
+  grid-area: photo-a;
+}
+
+.expect__plate--arena {
+  grid-area: photo-b;
+}
+
 .fees-card {
+  grid-area: fees;
   padding: var(--space-8);
+}
+
+.expect__plate.bl-card {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.expect__plate--huddle.bl-card {
+  aspect-ratio: 4 / 3;
+}
+
+.expect__plate--arena.bl-card {
+  aspect-ratio: 1 / 1;
+}
+
+.expect__plate-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(0.25) contrast(1.08) brightness(0.86);
+}
+
+.expect__plate--huddle .expect__plate-img {
+  object-position: center 28%;
+}
+
+.expect__plate--arena .expect__plate-img {
+  object-position: center 18%;
 }
 
 .fees-card__head {
@@ -393,14 +455,74 @@ html {
 }
 
 .site-footer {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(280px, 38vh, 420px);
   background: var(--ink-900);
-  color: var(--bone-200);
-  padding: 56px var(--gutter) 64px;
+  color: var(--bone-100);
+  padding: 0;
+  display: flex;
+  align-items: flex-end;
+}
+
+.site-footer .bl-photoband__scrim {
+  z-index: 1;
+  background: linear-gradient(
+    to top,
+    rgba(8, 8, 10, 0.96) 0%,
+    rgba(8, 8, 10, 0.82) 48%,
+    rgba(8, 8, 10, 0.4) 100%
+  );
+}
+
+.site-footer.bl-grain::after {
+  z-index: 1;
+}
+
+.site-footer__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
 .site-footer__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
   max-width: var(--container);
   margin: 0 auto;
+  padding: var(--space-10) var(--gutter) var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.site-footer__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.site-footer__copy .photo-band__quote {
+  max-width: 22ch;
+  color: var(--bone-100);
+}
+
+.site-footer__motto {
+  margin: 0;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9375rem;
+  letter-spacing: 0.04em;
+  color: var(--bone-200);
+}
+
+.site-footer__bar {
   display: flex;
   flex-wrap: wrap;
   gap: 24px 48px;
@@ -416,7 +538,7 @@ html {
 
 .site-footer__eyebrow {
   margin: 0 0 4px;
-  color: var(--bone-400);
+  color: var(--bone-200);
 }
 
 .site-footer__email {
@@ -424,6 +546,11 @@ html {
   font-weight: 600;
   font-size: 1.25rem;
   letter-spacing: 0.02em;
+  color: var(--red-400);
+}
+
+.site-footer__email:hover {
+  color: var(--bone-100);
 }
 
 .site-footer__meta {
@@ -432,7 +559,7 @@ html {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 0.875rem;
-  color: var(--bone-500);
+  color: var(--bone-200);
 }
 
 .sticky-register {
@@ -483,6 +610,12 @@ html {
   .register__paths {
     grid-template-columns: 1fr 1fr;
   }
+
+  .expect__plate--huddle.bl-card,
+  .expect__plate--arena.bl-card {
+    width: 100%;
+    margin: 0;
+  }
 }
 
 @media (min-width: 640px) and (max-width: 960px) {
@@ -497,6 +630,35 @@ html {
   .register__paths {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .expect__grid {
+    grid-template-columns: 1.08fr 0.92fr;
+    grid-template-areas:
+      "copy photo-a"
+      "photo-b fees";
+    column-gap: 28px;
+    row-gap: 20px;
+  }
+
+  .expect__copy {
+    padding-right: 4%;
+  }
+
+  .expect__plate--huddle.bl-card {
+    margin-top: 2rem;
+    width: 100%;
+  }
+
+  .expect__plate--arena.bl-card {
+    width: 86%;
+    margin-top: -0.5rem;
+    justify-self: start;
+  }
+
+  .fees-card {
+    margin-top: 1.75rem;
+    align-self: end;
+  }
 }
 
 @media (min-width: 961px) {
@@ -510,5 +672,40 @@ html {
 
   .register__paths {
     grid-template-columns: repeat(4, 1fr);
+  }
+
+  .expect__grid {
+    grid-template-columns: 1.12fr 0.88fr;
+    grid-template-areas:
+      "copy photo-a"
+      "photo-b fees";
+    column-gap: 48px;
+    row-gap: 12px;
+  }
+
+  .expect__copy {
+    padding-right: 8%;
+    padding-bottom: 1.5rem;
+  }
+
+  .expect__plate--huddle.bl-card {
+    margin-top: 3.25rem;
+    width: 94%;
+    justify-self: end;
+  }
+
+  .expect__plate--arena.bl-card {
+    width: 78%;
+    margin-left: 0;
+    margin-top: -2.5rem;
+    justify-self: start;
+  }
+
+  .fees-card {
+    margin-top: 2.5rem;
+    margin-right: 6%;
+    align-self: end;
+    max-width: 28rem;
+    justify-self: end;
   }
 }

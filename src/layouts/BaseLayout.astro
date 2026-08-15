@@ -25,7 +25,9 @@ const { title = "Barn League Hockey" } = Astro.props;
     />
   </head>
   <body>
-    <a class="skip-link" href="#register">{landing.skipLink}</a>
+    <a class="skip-link" href="#register" data-open-register
+      >{landing.skipLink}</a
+    >
     <div class="page">
       <slot />
     </div>

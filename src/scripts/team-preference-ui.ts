@@ -30,21 +30,29 @@ function scrollToRegister(): void {
   });
 }
 
+function openRegister(team: TeamPreference | null): void {
+  document.dispatchEvent(
+    new CustomEvent("blh:open-register", { detail: { team } }),
+  );
+}
+
 function onReady(): void {
   const params = new URLSearchParams(window.location.search);
-  markTeam(parseTeamPreference(params.get("team")));
+  const team = parseTeamPreference(params.get("team"));
+  markTeam(team);
 
   document
     .querySelectorAll<HTMLAnchorElement>(TEAM_CTA_SELECTOR)
     .forEach((el) => {
       el.addEventListener("click", (event) => {
-        const team = parseTeamPreference(el.dataset.teamCta);
-        if (!team) {
+        const next = parseTeamPreference(el.dataset.teamCta);
+        if (!next) {
           return;
         }
         event.preventDefault();
-        setTeamPreference(team);
+        setTeamPreference(next);
         scrollToRegister();
+        openRegister(next);
       });
     });
 }

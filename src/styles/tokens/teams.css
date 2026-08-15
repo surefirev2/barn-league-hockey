@@ -28,3 +28,9 @@
   --color-primary-hover: #c33f08;
   --color-primary-press: #a03406;
 }
+[data-team="individual"] {
+  --team-base: var(--ink-700);
+  --team-base-dark: var(--ink-800);
+  --team-accent: var(--red-400);
+  --team-on-base: var(--bone-100);
+}
