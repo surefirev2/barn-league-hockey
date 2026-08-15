@@ -40,7 +40,7 @@ Local Google export is off by default (`GOOGLE_SYNC_MODE=off`). Set it to `local
 
 GitHub Actions deploys from `main` via Wrangler to Workers Static Assets on **barnleaguehockey.ca**.
 
-1. Fill `.env.bootstrap`, then `make tokens/mint` writes `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` to `.env`.
+1. Fill `.env.bootstrap`, then `make tokens/mint` writes `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` to `.env`. Remint after changing token permissions.
 2. Run `make secrets/sync`.
 3. Merge to `main`. The [deploy workflow](.github/workflows/deploy.yaml) applies D1 migrations then `wrangler deploy`.
 
@@ -53,7 +53,7 @@ Wrangler declares the apex custom domain (`barnleaguehockey.ca`). Before the fir
 1. Add **barnleaguehockey.ca** to this Cloudflare account as a zone (change nameservers at the registrar, or CNAME-setup if using a partial zone).
 2. After the zone is active, `wrangler deploy` attaches the Worker as the apex custom domain. No `www` hostname is configured.
 
-Replace the placeholder D1 `database_id` in `wrangler.jsonc` after creating resources (once):
+Replace the placeholder D1 `database_id` in `wrangler.jsonc` after creating resources (once). The GitHub deploy token must include **D1 Write**, **Workers R2 Storage Write**, and **Queues Write** — remint with `make tokens/mint` then `make secrets/sync` if the token was created before those permissions existed.
 
 ```bash
 npx wrangler d1 create barn-league-hockey
