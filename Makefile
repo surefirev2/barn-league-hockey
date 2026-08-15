@@ -1,5 +1,5 @@
 # Makefile
-.PHONY: init run-pre-commit dev build check test secrets/sync deploy
+.PHONY: init run-pre-commit dev build check test secrets/sync tokens/mint deploy
 
 init:
 	pre-commit install
@@ -21,6 +21,9 @@ test:
 
 secrets/sync:
 	./scripts/sync-github-secrets.sh
+
+tokens/mint:
+	./scripts/create-least-privilege-token.sh
 
 deploy: build
 	@test -f .env || (echo "copy .env.example to .env" >&2 && exit 1)

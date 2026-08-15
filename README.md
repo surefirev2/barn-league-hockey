@@ -7,7 +7,7 @@ Production: [https://blh.hutch.fail](https://blh.hutch.fail)
 ## Local development
 
 ```bash
-cp .env.example .env   # fill Cloudflare account ID and API token
+make tokens/mint   # fills .env from .env.bootstrap
 npm install
 npm run dev
 ```
@@ -17,16 +17,16 @@ Useful targets:
 - `npm run check` — Prettier + `astro check`
 - `npm test` — Vitest
 - `npm run build` — static `dist/`
+- `make tokens/mint` — mint a least-privilege Cloudflare deploy token into `.env`
 - `make secrets/sync` — copy allowlisted `.env` keys to GitHub Actions secrets
 
 ## Deploy
 
 GitHub Actions deploys from `main` via Wrangler to Workers Static Assets on `blh.hutch.fail`.
 
-1. Copy `.env.example` to `.env` and fill `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`.
-2. The token needs **Workers Scripts Edit** and **DNS Edit** on zone `hutch.fail`.
-3. Run `make secrets/sync`.
-4. Merge to `main`. The [deploy workflow](.github/workflows/deploy.yaml) runs `wrangler deploy`.
+1. Fill `.env.bootstrap`, then `make tokens/mint` writes `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` to `.env`.
+2. Run `make secrets/sync`.
+3. Merge to `main`. The [deploy workflow](.github/workflows/deploy.yaml) runs `wrangler deploy`.
 
 Do not enable Cloudflare Workers Builds. GitHub Actions is the deploy path.
 
