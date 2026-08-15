@@ -1,0 +1,34 @@
+# Local Worker + static assets. workerd is Linux-only; this is the host path.
+# No Cloudflare account is required for local D1/R2/Queue.
+services:
+  dev:
+    image: node:22
+    working_dir: /app
+    environment:
+      ASTRO_HOST: 0.0.0.0
+      ASTRO_PORT: "4321"
+      WORKER_PORT: "8788"
+      HOME: /app
+      npm_config_cache: /tmp/npm-cache
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "${ASTRO_PORT:-4321}:4321"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - wrangler-state:/app/.wrangler
+    stdin_open: true
+    tty: true
+    command:
+      - bash
+      - -lc
+      - |
+        set -euo pipefail
+        npm install
+        exec ./scripts/dev.sh
+
+volumes:
+  node_modules:
+  wrangler-state:

@@ -1,10 +1,12 @@
 ---
+import photoHuddle from "../assets/photo-huddle.png";
+import photoArena from "../assets/photo-arena.png";
 import { landing } from "../content/landing";
 ---
 
 <section class="expect">
   <div class="expect__grid">
-    <div>
+    <div class="expect__copy">
       <div class="bl-sectionhead">
         <span class="bl-sectionhead__eyebrow">{landing.expect.eyebrow}</span>
         <h2 class="bl-sectionhead__title">{landing.expect.heading}</h2>
@@ -23,6 +25,28 @@ import { landing } from "../content/landing";
         }
       </ul>
     </div>
+    <figure
+      class="expect__plate expect__plate--huddle bl-card bl-card--plate bl-grain"
+    >
+      <img
+        class="expect__plate-img"
+        src={photoHuddle.src}
+        alt="Players in a huddle on the ice"
+        width={photoHuddle.width}
+        height={photoHuddle.height}
+      />
+    </figure>
+    <figure
+      class="expect__plate expect__plate--arena bl-card bl-card--plate bl-grain"
+    >
+      <img
+        class="expect__plate-img"
+        src={photoArena.src}
+        alt="Barn League captain on the bench after a game"
+        width={photoArena.width}
+        height={photoArena.height}
+      />
+    </figure>
     <div class="bl-card bl-card--plate fees-card">
       <div class="fees-card__head">
         <span

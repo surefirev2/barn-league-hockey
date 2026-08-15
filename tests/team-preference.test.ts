@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   parseTeamPreference,
+  shouldOpenRegisterDialog,
   TEAM_PREFERENCES,
 } from "../src/lib/team-preference";
 
@@ -24,5 +25,13 @@ describe("parseTeamPreference", () => {
     expect(parseTeamPreference(undefined)).toBeNull();
     expect(parseTeamPreference("")).toBeNull();
     expect(parseTeamPreference("   ")).toBeNull();
+  });
+});
+
+describe("shouldOpenRegisterDialog", () => {
+  it("opens on the register hash", () => {
+    expect(shouldOpenRegisterDialog("#register")).toBe(true);
+    expect(shouldOpenRegisterDialog("register")).toBe(true);
+    expect(shouldOpenRegisterDialog("#teams")).toBe(false);
   });
 });

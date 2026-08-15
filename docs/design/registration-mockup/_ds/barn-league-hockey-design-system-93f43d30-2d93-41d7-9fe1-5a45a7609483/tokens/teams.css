@@ -1,0 +1,30 @@
+/* Founding-team scopes. Wrap any team-specific region in
+   [data-team="shockers|hornets|rockets"] and the primary/accent flip. */
+[data-team="shockers"]{
+  --team-base:#0A1F44;
+  --team-base-dark:#061530;
+  --team-accent:#E85A0C;
+  --team-on-base:var(--bone-100);
+  --color-primary:var(--team-accent);
+  --color-primary-hover:#C94A06;
+  --color-primary-press:#A83E05;
+}
+[data-team="hornets"]{
+  --team-base:#0F2A12;
+  --team-base-dark:#08190A;
+  --team-accent:#F2C10D;
+  --team-on-base:var(--bone-100);
+  --color-primary:var(--team-accent);
+  --color-primary-hover:#D4A806;
+  --color-primary-press:#A98404;
+  --color-on-primary:var(--ink-900);
+}
+[data-team="rockets"]{
+  --team-base:#101010;
+  --team-base-dark:#000000;
+  --team-accent:#E24A0B;
+  --team-on-base:var(--bone-100);
+  --color-primary:var(--team-accent);
+  --color-primary-hover:#C33F08;
+  --color-primary-press:#A03406;
+}

@@ -3,15 +3,53 @@
   "name": "barn-league-hockey",
   "main": "src/worker/index.ts",
   "compatibility_date": "2026-08-15",
+  "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
   },
   "routes": [
     {
-      "pattern": "blh.hutch.fail",
+      "pattern": "barnleaguehockey.ca",
       "custom_domain": true,
     },
   ],
+  "vars": {
+    "SEASON_ID": "2026-27",
+    "GOOGLE_SYNC_MODE": "off",
+    "GOOGLE_DRIVE_FOLDER_ID": "",
+    "GOOGLE_REGISTRATION_SHEET_ID": "",
+    "TURNSTILE_SITE_KEY": "",
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "barn-league-hockey",
+      "database_id": "00000000-0000-4000-8000-000000000001",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "r2_buckets": [
+    {
+      "binding": "REGISTRATION_PDFS",
+      "bucket_name": "barn-league-hockey-registrations",
+    },
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "REGISTRATION_EXPORT",
+        "queue": "registration-export",
+      },
+    ],
+    "consumers": [
+      {
+        "queue": "registration-export",
+        "max_batch_size": 1,
+        "max_retries": 8,
+      },
+    ],
+  },
 }

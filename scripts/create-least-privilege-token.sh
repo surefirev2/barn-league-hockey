@@ -13,7 +13,7 @@ set -euo pipefail
 
 API_BASE="https://api.cloudflare.com/client/v4"
 TOKEN_NAME="${CLOUDFLARE_TOKEN_NAME:-barn-league-hockey-deploy}"
-ZONE_NAME="${CLOUDFLARE_ZONE_NAME:-hutch.fail}"
+ZONE_NAME="${CLOUDFLARE_ZONE_NAME:-barnleaguehockey.ca}"
 CF_TOKEN_SCOPE=""
 CF_API_STATUS=""
 CF_API_BODY=""

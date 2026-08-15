@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<!-- @template name="Player registration form" description="The #register form: four team paths, eight sections, six acknowledgements, success panel." -->
+<helmet>
+<script src="./ds-base.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css">
+<style>html{scroll-behavior:smooth}body{margin:0;background:var(--surface-page)}</style>
+</helmet>
+<div style="background:var(--surface-page);font-family:var(--font-body);min-height:100vh;padding-bottom:80px">
+<header class="bl-grain" style="background:var(--ink-900);padding:40px 24px 0">
+<div style="max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+<img src="assets/logo-barn-league-hockey.png" alt="Barn League Hockey" style="width:min(340px,64vw);height:auto">
+<h1 style="font-family:var(--font-display);text-transform:uppercase;font-size:clamp(2rem,5vw,3rem);line-height:.9;letter-spacing:.02em;color:var(--bone-100);margin:0">New player<br>registration form</h1>
+<p style="margin:0 0 32px;color:var(--bone-400);max-width:60ch;font-size:1.0625rem">Please complete all fields. This information helps us build balanced teams, communicate league information, and meet insurance requirements.</p>
+</div>
+</header>
+<div class="bl-brush"><p class="bl-brush__text">Still love the game? So do we.</p></div>
+<main id="register" style="max-width:720px;margin:0 auto;padding:48px 24px 0">
+<sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
+<form style="display:flex;flex-direction:column;gap:48px">
+<section>
+<div class="bl-formsection"><span class="bl-formsection__disc"><i class="fa-solid fa-hockey-puck" aria-hidden="true"></i></span><h3 class="bl-formsection__bar">Your path</h3></div>
+<p style="margin:0 0 16px;font-size:.9375rem;color:var(--text-muted)">Pick a founding team or register as an individual. Required — you can change it before you submit.</p>
+<div style="display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+<button type="button" data-team="rockets" onClick="{{ pickRockets }}" style="position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:14px 16px;min-height:76px;background:var(--team-base);border:2px solid var(--ink-900);border-radius:2px;box-shadow:var(--shadow-plate);cursor:pointer;text-align:left">
+<span style="font-family:var(--font-display);text-transform:uppercase;font-size:1.25rem;line-height:1;color:var(--bone-100)">Rockets</span>
+<span style="font-family:var(--font-condensed);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:.75rem;color:var(--team-accent)">Founding team</span>
+<sc-if value="{{ isRockets }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;border:3px solid var(--bone-100)"></span><span style="position:absolute;top:6px;right:8px;font-family:var(--font-label);font-weight:600;font-size:.6875rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-100)">✔ Selected</span></sc-if>
+</button>
+<button type="button" data-team="shockers" onClick="{{ pickShockers }}" style="position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:14px 16px;min-height:76px;background:var(--team-base);border:2px solid var(--ink-900);border-radius:2px;box-shadow:var(--shadow-plate);cursor:pointer;text-align:left">
+<span style="font-family:var(--font-display);text-transform:uppercase;font-size:1.25rem;line-height:1;color:var(--bone-100)">Shockers</span>
+<span style="font-family:var(--font-condensed);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:.75rem;color:var(--team-accent)">Founding team</span>
+<sc-if value="{{ isShockers }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;border:3px solid var(--bone-100)"></span><span style="position:absolute;top:6px;right:8px;font-family:var(--font-label);font-weight:600;font-size:.6875rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-100)">✔ Selected</span></sc-if>
+</button>
+<button type="button" data-team="hornets" onClick="{{ pickHornets }}" style="position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:14px 16px;min-height:76px;background:var(--team-base);border:2px solid var(--ink-900);border-radius:2px;box-shadow:var(--shadow-plate);cursor:pointer;text-align:left">
+<span style="font-family:var(--font-display);text-transform:uppercase;font-size:1.25rem;line-height:1;color:var(--bone-100)">Hornets</span>
+<span style="font-family:var(--font-condensed);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:.75rem;color:var(--team-accent)">Founding team</span>
+<sc-if value="{{ isHornets }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;border:3px solid var(--bone-100)"></span><span style="position:absolute;top:6px;right:8px;font-family:var(--font-label);font-weight:600;font-size:.6875rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-100)">✔ Selected</span></sc-if>
+</button>
+<button type="button" onClick="{{ pickIndividual }}" style="position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:14px 16px;min-height:76px;background:var(--ink-700);border:2px solid var(--ink-900);border-radius:2px;box-shadow:var(--shadow-plate);cursor:pointer;text-align:left">
+<span style="font-family:var(--font-display);text-transform:uppercase;font-size:1.25rem;line-height:1;color:var(--bone-100)">Individual</span>
+<span style="font-family:var(--font-condensed);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:.75rem;color:var(--red-400)">No team yet</span>
+<sc-if value="{{ isIndividual }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;inset:0;border:3px solid var(--bone-100)"></span><span style="position:absolute;top:6px;right:8px;font-family:var(--font-label);font-weight:600;font-size:.6875rem;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-100)">✔ Selected</span></sc-if>
+</button>
+</div>
+</section>
+<section>
+<div class="bl-formsection"><span class="bl-formsection__disc"><i class="fa-solid fa-user" aria-hidden="true"></i></span><h3 class="bl-formsection__bar">Player information</h3></div>
+<div style="display:flex;flex-direction:column;gap:20px">
+<div style="display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+<div class="bl-field"><label class="bl-label" for="firstName">First name<span class="bl-label__req">*</span></label><input class="bl-input" id="firstName" name="firstName" maxlength="80" autocomplete="given-name"></div>
+<div class="bl-field"><label class="bl-label" for="lastName">Last name<span class="bl-label__req">*</span></label><input class="bl-input" id="lastName" name="lastName" maxlength="80" autocomplete="family-name"></div>
+</div>
+<div style="display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+<div class="bl-field"><label class="bl-label" for="dateOfBirth">Date of birth<span class="bl-label__req">*</span><span class="bl-label__hint">(YYYY-MM-DD)</span></label><input class="bl-input" id="dateOfBirth" name="dateOfBirth" type="date" style="font-variant-numeric:tabular-nums"><span class="bl-help">Players must be 18 or older on 2026-09-01.</span></div>
+<div class="bl-field"><label class="bl-label" for="phone">Phone number<span class="bl-label__req">*</span></label><input class="bl-input" id="phone" name="phone" type="tel" autocomplete="tel" style="font-variant-numeric:tabular-nums"></div>
+</div>
+<div class="bl-field"><label class="bl-label" for="email">Email address<span class="bl-label__req">*</span></label><input class="bl-input" id="email" name="email" type="email" autocomplete="email" aria-invalid="{{ emailInvalid }}" aria-describedby="email-error"><sc-if value="{{ showError }}" hint-placeholder-val="{{ false }}"><span class="bl-error" id="email-error"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>Enter a valid email address</span></sc-if></div>
+</div>
+</section>
+<section>
+<div class="bl-formsection"><span class="bl-formsection__disc"><i class="fa-solid fa-phone" aria-hidden="true"></i></span><h3 class="bl-formsection__bar">Emergency contact &amp; address</h3></div>
+<p style="margin:0 0 20px;font-size:.9375rem;color:var(--text-muted)">Required for insurance coverage.</p>
+<div style="display:flex;flex-direction:column;gap:20px">
+<div class="bl-field"><label class="bl-label" for="emergencyName">Emergency contact name<span class="bl-label__req">*</span></label><input class="bl-input" id="emergencyName" name="emergencyName" maxlength="120"></div>
+<div style="display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+<div class="bl-field"><label class="bl-label" for="emergencyRelationship">Relationship to player<span class="bl-label__req">*</span></label><input class="bl-input" id="emergencyRelationship" name="emergencyRelationship" maxlength="80"></div>
+<div class="bl-field"><label class="bl-label" for="emergencyPhone">Emergency phone number<span class="bl-label__req">*</span></label><input class="bl-input" id="emergencyPhone" name="emergencyPhone" type="tel" style="font-variant-numeric:tabular-nums"></div>
+</div>
+<div class="bl-field"><label class="bl-label" for="emergencyEmail">Emergency contact email<span class="bl-label__hint">(optional)</span></label><input class="bl-input" id="emergencyEmail" name="emergencyEmail" type="email"></div>
+<div class="bl-field"><label class="bl-label" for="addressLine">Mailing address<span class="bl-label__req">*</span></label><input class="bl-input" id="addressLine" name="addressLine" maxlength="200" autocomplete="street-address"></div>
+<div style="display:grid;gap:20px;grid-template-columns:2fr 1fr 1.2fr">
+<div class="bl-field"><label class="bl-label" for="city">City<span class="bl-label__req">*</span></label><input class="bl-input" id="city" name="city" maxlength="80"></div>
+<div class="bl-field"><label class="bl-label" for="province">Province<span class="bl-label__req">*</span></label><input class="bl-input" id="province" name="province" value="ON" maxlength="40"></div>
+<div class="bl-field"><label class="bl-label" for="postalCode">Postal code<span class="bl-label__req">*</span></label><input class="bl-input" id="postalCode" name="postalCode" placeholder="A1A 1A1" style="font-variant-numeric:tabular-nums;text-transform:uppercase"></div>
+</div>
+</div>
+</section>
+<section>
+<div class="bl-formsection"><span class="bl-formsection__disc"><i class="fa-solid fa-users" aria-hidden="true"></i></span><h3 class="bl-formsection__bar">Connections</h3></div>
+<div style="display:flex;flex-direction:column;gap:24px">
+<fieldset style="border:0;margin:0;padding:0;min-width:0">
+<legend class="bl-label" style="padding:0;margin-bottom:8px">Do you know anyone currently in the league?<span class="bl-label__req">*</span></legend>
+<div class="bl-choicegroup">
+<label class="bl-check" style="position:relative"><input type="radio" name="knowsSomeoneInLeague" value="yes" onChange="{{ knowsYes }}"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Yes</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="knowsSomeoneInLeague" value="no" onChange="{{ knowsNo }}"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>No</span></label>
+</div>
+</fieldset>
+<sc-if value="{{ knowsSomeone }}" hint-placeholder-val="{{ false }}">
+<div class="bl-field"><label class="bl-label" for="knownPlayerNames">If yes, please list their name(s)<span class="bl-label__req">*</span></label><input class="bl-input" id="knownPlayerNames" name="knownPlayerNames"></div>
+</sc-if>
+<div class="bl-field"><label class="bl-label" for="preferredTeammates">Anyone you would prefer to play on the same team with?<span class="bl-label__hint">(optional)</span></label><input class="bl-input" id="preferredTeammates" name="preferredTeammates"><span class="bl-help">We'll consider requests. Balanced, competitive teams come first, so we can't guarantee placement.</span></div>
+</div>
+</section>
+<section>
+<div class="bl-formsection"><span class="bl-formsection__disc"><i class="fa-solid fa-trophy" aria-hidden="true"></i></span><h3 class="bl-formsection__bar">Hockey experience</h3></div>
+<div style="display:flex;flex-direction:column;gap:28px">
+<fieldset style="border:0;margin:0;padding:0;min-width:0">
+<legend class="bl-label" style="padding:0;margin-bottom:8px">Highest level of hockey played<span class="bl-label__req">*</span></legend>
+<div class="bl-choicegroup">
+<label class="bl-check" style="position:relative"><input type="radio" name="highestLevel" value="learn_to_play"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Learn to Play / Beginner</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="highestLevel" value="house_rec"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>House League / Recreational</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="highestLevel" value="select_rep"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Select / Rep / Travel</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="highestLevel" value="junior_senior_college"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Junior / Senior / College / Other</span></label>
+</div>
+</fieldset>
+<fieldset style="border:0;margin:0;padding:0;min-width:0">
+<legend class="bl-label" style="padding:0;margin-bottom:8px">Primary position<span class="bl-label__req">*</span></legend>
+<div class="bl-choicegroup">
+<label class="bl-check" style="position:relative"><input type="radio" name="primaryPosition" value="forward"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Forward</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="primaryPosition" value="defence"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Defence</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="primaryPosition" value="goaltender"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Goaltender</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="primaryPosition" value="no_preference"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>No preference</span></label>
+</div>
+</fieldset>
+<fieldset style="border:0;margin:0;padding:0;min-width:0">
+<legend class="bl-label" style="padding:0;margin-bottom:8px">Secondary position<span class="bl-label__hint">(if applicable)</span></legend>
+<div class="bl-choicegroup">
+<label class="bl-check" style="position:relative"><input type="radio" name="secondaryPosition" value="forward"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Forward</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="secondaryPosition" value="defence"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Defence</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="secondaryPosition" value="goaltender"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Goaltender</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="secondaryPosition" value="no_preference"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>No preference</span></label>
+</div>
+</fieldset>
+<div style="display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+<div class="bl-field"><label class="bl-label" for="yearsPlayed">How many years have you played hockey?<span class="bl-label__req">*</span></label><input class="bl-input" id="yearsPlayed" name="yearsPlayed" placeholder="12 years"></div>
+<div class="bl-field"><label class="bl-label" for="timeSinceRegular">How long since you played regularly?<span class="bl-label__req">*</span></label><input class="bl-input" id="timeSinceRegular" name="timeSinceRegular" placeholder="2 seasons"></div>
+</div>
+<fieldset style="border:0;margin:0;padding:0;min-width:0">
+<legend class="bl-label" style="padding:0;margin-bottom:8px">How would you rate your current playing ability?<span class="bl-label__req">*</span></legend>
+<div class="bl-choicegroup">
+<label class="bl-check" style="position:relative"><input type="radio" name="abilityRating" value="beginner"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Beginner</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="abilityRating" value="recreational"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Recreational</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="abilityRating" value="intermediate"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Intermediate</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="abilityRating" value="experienced"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Experienced</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="abilityRating" value="advanced"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Advanced</span></label>
+</div>
+</fieldset>
+</div>
+</section>
+<section>
+<div class="bl-formsection"><span class="bl-formsection__disc"><i class="fa-solid fa-calendar-days" aria-hidden="true"></i></span><h3 class="bl-formsection__bar">Availability &amp; intentions</h3></div>
+<div style="display:flex;flex-direction:column;gap:28px">
+<fieldset style="border:0;margin:0;padding:0;min-width:0">
+<legend class="bl-label" style="padding:0;margin-bottom:8px">How often do you plan to participate?<span class="bl-label__req">*</span></legend>
+<div class="bl-choicegroup">
+<label class="bl-check" style="position:relative"><input type="radio" name="participation" value="every_week"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Every week / Almost every week</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="participation" value="most_weeks"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Most weeks</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="participation" value="half_season"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Approximately half the season</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="participation" value="spare"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Occasional / Spare player</span></label>
+</div>
+</fieldset>
+<fieldset style="border:0;margin:0;padding:0;min-width:0">
+<legend class="bl-label" style="padding:0;margin-bottom:8px">Are you interested in being contacted as a spare when another team is short players?<span class="bl-label__req">*</span></legend>
+<div class="bl-choicegroup">
+<label class="bl-check" style="position:relative"><input type="radio" name="spareInterest" value="yes"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Yes</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="spareInterest" value="no"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>No</span></label>
+</div>
+</fieldset>
+</div>
+</section>
+<section>
+<div class="bl-formsection bl-formsection--dark"><span class="bl-formsection__disc"><i class="fa-solid fa-dollar-sign" aria-hidden="true"></i></span><h3 class="bl-formsection__bar">Deposit</h3></div>
+<div class="bl-card bl-card--plate" style="padding:24px;display:flex;flex-direction:column;gap:16px">
+<p style="margin:0;font-family:var(--font-display);text-transform:uppercase;font-size:1.5rem;line-height:1">$100 deposit to secure your spot</p>
+<p style="margin:0">E-transfer $100 to <strong style="font-variant-numeric:tabular-nums">HughTylerShannon@gmail.com</strong>. Use your full name as the e-transfer memo.</p>
+<p style="margin:0;font-family:var(--font-label);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:.875rem;color:var(--text-accent)">Your spot is not confirmed until the deposit is received.</p>
+<div class="bl-starrule" aria-hidden="true"><span class="bl-starrule__line"></span><span class="bl-starrule__star">★</span><span class="bl-starrule__line"></span></div>
+<fieldset style="border:0;margin:0;padding:0;min-width:0">
+<legend class="bl-label" style="padding:0;margin-bottom:8px">Deposit sent?<span class="bl-label__req">*</span></legend>
+<div class="bl-choicegroup">
+<label class="bl-check" style="position:relative"><input type="radio" name="depositStatus" value="paid"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Paid</span></label>
+<label class="bl-check" style="position:relative"><input type="radio" name="depositStatus" value="pending"><span class="bl-check__box bl-check__box--round"><span class="bl-check__dot"></span></span><span>Pending</span></label>
+</div>
+</fieldset>
+</div>
+</section>
+<section>
+<div class="bl-formsection"><span class="bl-formsection__disc"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span><h3 class="bl-formsection__bar">Acknowledgements &amp; signature</h3></div>
+<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:24px">
+<label class="bl-check" style="position:relative"><input type="checkbox" name="ackAccuracy" onChange="{{ ackChange }}"><span class="bl-check__box"><span class="bl-check__mark">✔</span></span><span>I confirm that the information provided on this form is accurate and complete.</span></label>
+<label class="bl-check" style="position:relative"><input type="checkbox" name="ackAdminUse" onChange="{{ ackChange }}"><span class="bl-check__box"><span class="bl-check__mark">✔</span></span><span>I understand that this information will be used for league administration and to obtain insurance coverage for Barn League Hockey.</span></label>
+<label class="bl-check" style="position:relative"><input type="checkbox" name="ackDisclosure" onChange="{{ ackChange }}"><span class="bl-check__box"><span class="bl-check__mark">✔</span></span><span>I authorize Barn League Hockey to collect, use, and disclose this information to our insurance provider as required for coverage.</span></label>
+<label class="bl-check" style="position:relative"><input type="checkbox" name="ackCoverage" onChange="{{ ackChange }}"><span class="bl-check__box"><span class="bl-check__mark">✔</span></span><span>I understand that insurance coverage is provided for registered players only and is subject to the terms and conditions of the league's insurance policy.</span></label>
+<label class="bl-check" style="position:relative"><input type="checkbox" name="ackRisk" onChange="{{ ackChange }}"><span class="bl-check__box"><span class="bl-check__mark">✔</span></span><span>I agree to abide by all league rules and policies. I acknowledge that participation in hockey involves inherent risks of injury.</span></label>
+<label class="bl-check" style="position:relative"><input type="checkbox" name="ackBalancedTeams" onChange="{{ ackChange }}"><span class="bl-check__box"><span class="bl-check__mark">✔</span></span><span>I understand this information will also be used to build balanced teams.</span></label>
+</div>
+<div style="display:flex;flex-direction:column;gap:20px">
+<div class="bl-field"><label class="bl-label" for="signatureName">Signature — type your full name<span class="bl-label__req">*</span></label><input class="bl-input" id="signatureName" name="signatureName"><span class="bl-help">Must match the first and last name entered above.</span></div>
+<div class="bl-field"><span class="bl-label">Drawn signature<span class="bl-label__hint">(optional)</span></span>
+<div style="height:132px;background:var(--surface-field);border:1px solid var(--border-field);border-radius:2px;display:flex;align-items:flex-end;justify-content:space-between;padding:12px 16px">
+<span style="font-family:var(--font-condensed);text-transform:uppercase;letter-spacing:.1em;font-size:.75rem;color:var(--bone-500)">Sign here — or type your name above</span>
+<button type="button" class="bl-btn bl-btn--ghost bl-btn--sm">Clear</button>
+</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:16px 24px;align-items:center;justify-content:space-between;padding-top:8px">
+<p style="margin:0;font-size:.9375rem;color:var(--text-muted);max-width:38ch">All six acknowledgements are required before you can submit.</p>
+<button type="button" class="bl-btn bl-btn--primary bl-btn--lg" onClick="{{ submit }}" disabled="{{ submitDisabled }}">Submit registration</button>
+</div>
+</div>
+</section>
+</form>
+</sc-if>
+<sc-if value="{{ submitted }}" hint-placeholder-val="{{ false }}">
+<div class="bl-card bl-card--plate" style="padding:40px;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;align-items:center;gap:16px">
+<span class="bl-iconbtn bl-iconbtn--solid bl-iconbtn--circle bl-iconbtn--lg" aria-hidden="true"><i class="fa-solid fa-circle-check"></i></span>
+<h2 style="font-family:var(--font-display);text-transform:uppercase;font-size:2.5rem;line-height:.9;margin:0">You're in.</h2>
+</div>
+<div style="display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+<div><p class="bl-eyebrow" style="margin:0 0 4px;color:var(--text-muted)">Registration ID</p><p style="margin:0;font-family:var(--font-condensed);font-weight:600;font-size:1.5rem;font-variant-numeric:tabular-nums">BLH-2627-004182</p></div>
+<div><p class="bl-eyebrow" style="margin:0 0 4px;color:var(--text-muted)">Your path</p><p style="margin:0;font-family:var(--font-display);text-transform:uppercase;font-size:1.5rem;line-height:1">{{ pathLabel }}</p></div>
+</div>
+<div class="bl-starrule" aria-hidden="true"><span class="bl-starrule__line"></span><span class="bl-starrule__star">★</span><span class="bl-starrule__line"></span></div>
+<div>
+<p style="margin:0 0 8px;font-family:var(--font-label);font-weight:600;text-transform:uppercase;letter-spacing:.05em;font-size:.875rem">Deposit still pending</p>
+<p style="margin:0">E-transfer $100 to <strong style="font-variant-numeric:tabular-nums">HughTylerShannon@gmail.com</strong> with your full name as the memo. Your spot is not confirmed until the deposit is received.</p>
+</div>
+<p style="margin:0;color:var(--text-muted)">Questions about this registration? Email <a href="mailto:barnleaguehockey@gmail.com">barnleaguehockey@gmail.com</a> and quote the registration ID above.</p>
+<div><button type="button" class="bl-btn bl-btn--secondary" onClick="{{ reset }}">Register someone else</button></div>
+</div>
+</sc-if>
+</main>
+<div class="bl-brush bl-brush--dark" style="margin-top:64px"><p class="bl-brush__text">We all work tomorrow.</p></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:880,&quot;height&quot;:1100},&quot;teamPreference&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;rockets&quot;,&quot;shockers&quot;,&quot;hornets&quot;,&quot;individual&quot;],&quot;default&quot;:&quot;individual&quot;,&quot;tsType&quot;:&quot;\&quot;rockets\&quot; | \&quot;shockers\&quot; | \&quot;hornets\&quot; | \&quot;individual\&quot;&quot;,&quot;section&quot;:&quot;Content&quot;},&quot;state&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;form&quot;,&quot;success&quot;],&quot;default&quot;:&quot;form&quot;,&quot;tsType&quot;:&quot;\&quot;form\&quot; | \&quot;success\&quot;&quot;,&quot;section&quot;:&quot;State&quot;},&quot;showValidationError&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;State&quot;}}">
+const LABELS = { rockets: "Rockets", shockers: "Shockers", hornets: "Hornets", individual: "Individual" };
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    let team = props.teamPreference ?? "individual";
+    try {
+      const q = new URLSearchParams(location.search).get("team");
+      if (q && LABELS[q]) team = q;
+    } catch (e) {}
+    this.state = { team, knows: false, acks: 0, submitted: props.state === "success" };
+  }
+  componentDidUpdate(prev) {
+    if (prev.state !== this.props.state) this.setState({ submitted: this.props.state === "success" });
+    if (prev.teamPreference !== this.props.teamPreference && this.props.teamPreference) this.setState({ team: this.props.teamPreference });
+  }
+  pick(team) { return () => this.setState({ team }); }
+  renderVals() {
+    const { team, knows, acks, submitted } = this.state;
+    const showError = this.props.showValidationError ?? false;
+    return {
+      isRockets: team === "rockets", isShockers: team === "shockers",
+      isHornets: team === "hornets", isIndividual: team === "individual",
+      pickRockets: this.pick("rockets"), pickShockers: this.pick("shockers"),
+      pickHornets: this.pick("hornets"), pickIndividual: this.pick("individual"),
+      knowsSomeone: knows,
+      knowsYes: () => this.setState({ knows: true }),
+      knowsNo: () => this.setState({ knows: false }),
+      ackChange: (e) => this.setState({ acks: acks + (e.target.checked ? 1 : -1) }),
+      submitDisabled: acks < 6,
+      showError, emailInvalid: showError ? "true" : "false",
+      showForm: !submitted, submitted,
+      pathLabel: LABELS[team] ?? "Individual",
+      submit: () => this.setState({ submitted: true }),
+      reset: () => this.setState({ submitted: false, acks: 0, knows: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

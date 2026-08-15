@@ -1,23 +1,41 @@
 ---
+import photoFaceoff from "../assets/photo-faceoff.jpg";
 import { landing } from "../content/landing";
 ---
 
-<footer class="site-footer">
+<footer class="site-footer bl-photoband bl-grain">
+  <img
+    class="bl-photoband__img site-footer__photo"
+    src={photoFaceoff.src}
+    alt="Players lining up for a faceoff"
+    width={photoFaceoff.width}
+    height={photoFaceoff.height}
+    style="object-position: center 35%"
+  />
+  <div class="bl-photoband__scrim"></div>
   <div class="site-footer__inner">
-    <div class="site-footer__contact">
-      <span
-        class="bl-iconbtn bl-iconbtn--solid bl-iconbtn--circle"
-        aria-hidden="true"
-      >
-        <i class="fa-solid fa-envelope"></i>
-      </span>
-      <div>
-        <p class="bl-eyebrow site-footer__eyebrow">{landing.footer.eyebrow}</p>
-        <a href={`mailto:${landing.email}`} class="on-dark site-footer__email"
-          >{landing.email}</a
-        >
-      </div>
+    <div class="site-footer__copy">
+      <p class="photo-band__quote">{landing.stillLove}</p>
+      <p class="site-footer__motto">{landing.motto}</p>
     </div>
-    <p class="site-footer__meta">{landing.footer.meta}</p>
+    <div class="site-footer__bar">
+      <div class="site-footer__contact">
+        <span
+          class="bl-iconbtn bl-iconbtn--solid bl-iconbtn--circle"
+          aria-hidden="true"
+        >
+          <i class="fa-solid fa-envelope"></i>
+        </span>
+        <div>
+          <p class="bl-eyebrow site-footer__eyebrow">
+            {landing.footer.eyebrow}
+          </p>
+          <a href={`mailto:${landing.email}`} class="on-dark site-footer__email"
+            >{landing.email}</a
+          >
+        </div>
+      </div>
+      <p class="site-footer__meta">{landing.footer.meta}</p>
+    </div>
   </div>
 </footer>
