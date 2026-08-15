@@ -88,7 +88,7 @@ Do not put `ADMIN_READ_TOKEN` in GitHub Actions secrets or `wrangler.jsonc`.
 
 ### Google Cloud, Shared Drive, and Sheet (operator checklist)
 
-Google Drive/Sheets are an **async queue projection**. A Google outage does not fail player submit. Production `wrangler.jsonc` stays `"GOOGLE_SYNC_MODE": "off"` until the four values below exist **and** the Worker secrets are stored. Shipping `live` before secrets makes the queue consumer throw and retry (8 attempts).
+Google Drive/Sheets are an **async queue projection**. A Google outage does not fail player submit. Production `wrangler.jsonc` uses `"GOOGLE_SYNC_MODE": "live"` only after Worker secrets exist. Shipping `live` before secrets makes the queue consumer throw and retry (8 attempts). Local `make dev` stays off via `.dev.vars`.
 
 Do this in Google (this repo cannot create the project, folder, or Sheet):
 
