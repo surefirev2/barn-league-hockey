@@ -5,7 +5,7 @@ import { validPayload } from "./fixtures/registration";
 import { testEnv } from "./helpers/cf-bindings";
 
 describe("POST /api/registrations", () => {
-  it("persists D1 + R2, enqueues export, and returns 201 with a ULID", async () => {
+  it("persists D1 + R2 and returns 201 with a ULID without enqueueing when sync is off", async () => {
     const env = testEnv();
     const response = await worker.fetch(
       new Request("https://barnleaguehockey.ca/api/registrations", {
@@ -28,10 +28,28 @@ describe("POST /api/registrations", () => {
     const row = env.DB.rows.get(body.id);
     expect(row?.pdf_r2_key).toBe(`registrations/2026-27/${body.id}.pdf`);
     expect(env.REGISTRATION_PDFS.objects.has(row?.pdf_r2_key ?? "")).toBe(true);
-    expect(env.REGISTRATION_EXPORT.messages).toEqual([
-      { registrationId: body.id },
-    ]);
+    expect(env.REGISTRATION_EXPORT.messages).toEqual([]);
   });
+
+  it.each(["local", "live"] as const)(
+    "enqueues export when GOOGLE_SYNC_MODE is %s",
+    async (mode) => {
+      const env = testEnv({ GOOGLE_SYNC_MODE: mode });
+      const response = await worker.fetch(
+        new Request("https://barnleaguehockey.ca/api/registrations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(validPayload()),
+        }),
+        env,
+      );
+      expect(response.status).toBe(201);
+      const body = (await response.json()) as { id: string };
+      expect(env.REGISTRATION_EXPORT.messages).toEqual([
+        { registrationId: body.id },
+      ]);
+    },
+  );
 
   it("allows a second registration with the same email in the season", async () => {
     const env = testEnv();

@@ -1,0 +1,7 @@
+# Copy to .dev.vars (gitignored). Wrangler loads this over wrangler.jsonc vars
+# for `make dev`. Keep Google off on the laptop even if production is live.
+
+GOOGLE_SYNC_MODE=off
+
+# Optional. Required for GET /api/admin/registrations and PDF download locally.
+# ADMIN_READ_TOKEN=

@@ -1,5 +1,6 @@
 import type { Env, MessageBatch } from "./env";
 import { handleRegistrationExport } from "./google/sync";
+import { handleAdminRequest } from "./registrations/admin";
 import { handlePostRegistration } from "./registrations/handler";
 
 export default {
@@ -12,6 +13,10 @@ export default {
     }
     if (request.method === "POST" && url.pathname === "/api/registrations") {
       return handlePostRegistration(request, env);
+    }
+    const admin = await handleAdminRequest(request, env);
+    if (admin) {
+      return admin;
     }
     if (url.pathname.startsWith("/api/")) {
       return new Response("Not found", { status: 404 });
