@@ -224,15 +224,18 @@ resolve_zone_id() {
 create_token() {
   local account_id="$1"
   local zone_id="$2"
-  local scripts_id settings_id routes_id
+  local scripts_id settings_id routes_id d1_id r2_id queues_id
   local account_scope="com.cloudflare.api.account"
   local zone_scope="com.cloudflare.api.account.zone"
 
   scripts_id="$(perm_id "Workers Scripts Write" "${account_scope}")"
   settings_id="$(perm_id "Account Settings Read" "${account_scope}")"
+  d1_id="$(perm_id "D1 Write" "${account_scope}")"
+  r2_id="$(perm_id "Workers R2 Storage Write" "${account_scope}")"
+  queues_id="$(perm_id "Queues Write" "${account_scope}")"
   routes_id="$(perm_id "Workers Routes Write" "${zone_scope}")"
 
-  log "permissions: Workers Scripts Write, Account Settings Read, Workers Routes Write (${ZONE_NAME} only)"
+  log "permissions: Workers Scripts Write, Account Settings Read, D1 Write, Workers R2 Storage Write, Queues Write, Workers Routes Write (${ZONE_NAME} only)"
 
   local body
   body="$(
@@ -242,6 +245,9 @@ create_token() {
       --arg zone "${zone_id}" \
       --arg scripts "${scripts_id}" \
       --arg settings "${settings_id}" \
+      --arg d1 "${d1_id}" \
+      --arg r2 "${r2_id}" \
+      --arg queues "${queues_id}" \
       --arg routes "${routes_id}" \
       '{
         name: $name,
@@ -249,7 +255,7 @@ create_token() {
           {
             effect: "allow",
             resources: {("com.cloudflare.api.account." + $acct): "*"},
-            permission_groups: [{id: $scripts}, {id: $settings}]
+            permission_groups: [{id: $scripts}, {id: $settings}, {id: $d1}, {id: $r2}, {id: $queues}]
           },
           {
             effect: "allow",

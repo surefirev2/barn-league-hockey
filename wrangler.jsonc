@@ -27,7 +27,7 @@
     {
       "binding": "DB",
       "database_name": "barn-league-hockey",
-      "database_id": "00000000-0000-4000-8000-000000000001",
+      "database_id": "68c7a757-60fb-46ac-807f-d02657a86dcc",
       "migrations_dir": "migrations",
     },
   ],
