@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "barn-league-hockey",
+  "main": "src/worker/index.ts",
+  "compatibility_date": "2026-08-15",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+  },
+  "routes": [
+    {
+      "pattern": "blh.hutch.fail",
+      "custom_domain": true,
+    },
+  ],
+}
