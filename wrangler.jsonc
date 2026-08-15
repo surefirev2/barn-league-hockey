@@ -18,9 +18,9 @@
   ],
   "vars": {
     "SEASON_ID": "2026-27",
-    "GOOGLE_SYNC_MODE": "off",
-    "GOOGLE_DRIVE_FOLDER_ID": "",
-    "GOOGLE_REGISTRATION_SHEET_ID": "",
+    "GOOGLE_SYNC_MODE": "live",
+    "GOOGLE_DRIVE_FOLDER_ID": "1AxyjxqI1U8qioroPj-EAuQVZg4HqX_LY",
+    "GOOGLE_REGISTRATION_SHEET_ID": "1TZAVPh5E-CohpsQKfRoInAq0nEDWcx5YNKiYgV1M-yA",
     "TURNSTILE_SITE_KEY": "",
   },
   "d1_databases": [

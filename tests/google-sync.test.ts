@@ -119,4 +119,85 @@ describe("Google projection adapters", () => {
     expect(env.DB.rows.get(body.id)?.exported_at).toBeTruthy();
     expect(env.DB.rows.get(body.id)?.drive_file_id).toBe("");
   });
+
+  it("live adapter upserts Drive and rewrites the Sheet via mocked Google APIs", async () => {
+    const pem = await testServiceAccountPem();
+    const env = testEnv({
+      GOOGLE_SYNC_MODE: "live",
+      GOOGLE_DRIVE_FOLDER_ID: "folder-test",
+      GOOGLE_REGISTRATION_SHEET_ID: "sheet-test",
+      GOOGLE_SERVICE_ACCOUNT_EMAIL: "sa@example.com",
+      GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY: pem,
+    });
+    const created = await worker.fetch(
+      new Request("https://barnleaguehockey.ca/api/registrations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(validPayload()),
+      }),
+      env,
+    );
+    const body = (await created.json()) as { id: string };
+    const fetchImpl = mockGoogleFetch();
+    await handleRegistrationExport(env, body.id, fetchImpl);
+    expect(env.DB.rows.get(body.id)?.drive_file_id).toBe("drive-file-1");
+    expect(env.DB.rows.get(body.id)?.exported_at).toBeTruthy();
+    expect(
+      fetchImpl.urls.some((url) => url.includes("oauth2.googleapis.com/token")),
+    ).toBe(true);
+    expect(
+      fetchImpl.urls.some((url) => url.includes("upload/drive/v3/files")),
+    ).toBe(true);
+    expect(
+      fetchImpl.urls.some((url) => url.includes("Registrations!A:Z:clear")),
+    ).toBe(true);
+  });
 });
+
+async function testServiceAccountPem(): Promise<string> {
+  const pair = await crypto.subtle.generateKey(
+    {
+      name: "RSASSA-PKCS1-v1_5",
+      modulusLength: 2048,
+      publicExponent: new Uint8Array([1, 0, 1]),
+      hash: "SHA-256",
+    },
+    true,
+    ["sign", "verify"],
+  );
+  const pkcs8 = await crypto.subtle.exportKey("pkcs8", pair.privateKey);
+  const bytes = new Uint8Array(pkcs8);
+  let binary = "";
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte);
+  }
+  const b64 = btoa(binary);
+  const lines = b64.match(/.{1,64}/g)?.join("\n") ?? b64;
+  return `-----BEGIN PRIVATE KEY-----\n${lines}\n-----END PRIVATE KEY-----`;
+}
+
+function mockGoogleFetch(): typeof fetch & { urls: string[] } {
+  const urls: string[] = [];
+  const impl = (async (input: RequestInfo | URL, init?: RequestInit) => {
+    const url = String(input);
+    urls.push(url);
+    if (url.includes("oauth2.googleapis.com/token")) {
+      return Response.json({ access_token: "ya29.test" });
+    }
+    if (
+      url.includes("googleapis.com/drive/v3/files") &&
+      !url.includes("upload")
+    ) {
+      return Response.json({ files: [] });
+    }
+    if (url.includes("upload/drive/v3/files")) {
+      return Response.json({ id: "drive-file-1" });
+    }
+    if (url.includes(":clear") || url.includes("/values/Registrations!A1")) {
+      return new Response("{}", { status: 200 });
+    }
+    throw new Error(`unexpected fetch ${init?.method ?? "GET"} ${url}`);
+  }) as typeof fetch & { urls: string[] };
+  impl.urls = urls;
+  return impl;
+}

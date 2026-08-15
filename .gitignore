@@ -5,5 +5,6 @@ dist/
 .env
 .env.local
 .env.bootstrap
+.dev.vars
 docs/design/landingpage-mockup/uploads/
 docs/design/landingpage-mockup/.thumbnail

@@ -1,4 +1,5 @@
 import type { Env } from "../env";
+import { googleSyncMode } from "../env";
 import { buildRegistrationPdf } from "../pdf/registration-pdf";
 import { newRegistrationId } from "./id";
 import { pdfR2Key, type RegistrationInput } from "./schema";
@@ -67,10 +68,12 @@ export async function handlePostRegistration(
     );
   }
 
-  try {
-    await env.REGISTRATION_EXPORT.send({ registrationId: id });
-  } catch (error) {
-    console.error("registration enqueue failed", error);
+  if (googleSyncMode(env.GOOGLE_SYNC_MODE) !== "off") {
+    try {
+      await env.REGISTRATION_EXPORT.send({ registrationId: id });
+    } catch (error) {
+      console.error("registration enqueue failed", error);
+    }
   }
 
   return Response.json(
