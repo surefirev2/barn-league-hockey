@@ -1,0 +1,63 @@
+:root {
+  /* --- ink / neutral (the black rink-boards end of the palette) --- */
+  --ink-900: #08080a;
+  --ink-800: #0e0f11;
+  --ink-700: #16171a;
+  --ink-600: #232427;
+  --ink-500: #3a3b3f;
+  --ink-400: #5c5d62;
+  --ink-300: #8a8b90;
+
+  /* --- bone / paper (the distressed cream of the wordmark + panels) --- */
+  --bone-100: #fbf7f1;
+  --bone-200: #f2eae0;
+  --bone-300: #e8dfd2;
+  --bone-400: #d2c6b4;
+  --bone-500: #b4a794;
+  --paper: #f4f3f1;
+
+  /* --- red (league primary) --- */
+  --red-900: #4e0b0d;
+  --red-800: #7c1214;
+  --red-700: #a2110f;
+  --red-600: #c8161c;
+  --red-500: #dd2126;
+  --red-400: #ef4a48;
+
+  /* --- semantic --- */
+  --color-primary: var(--red-600);
+  --color-primary-hover: var(--red-700);
+  --color-primary-press: var(--red-800);
+  --color-on-primary: var(--bone-100);
+  --color-accent: var(--red-400);
+
+  --surface-page: var(--bone-200);
+  --surface-page-dark: var(--ink-900);
+  --surface-card: #ffffff;
+  --surface-card-dark: var(--ink-700);
+  --surface-panel: var(--bone-300);
+  --surface-sunken: var(--paper);
+  --surface-field: #ffffff;
+
+  --text-heading: var(--ink-900);
+  --text-body: var(--ink-700);
+  --text-muted: var(--ink-400);
+  --text-inverse: var(--bone-200);
+  --text-inverse-muted: var(--bone-500);
+  --text-accent: var(--red-700);
+  --text-accent-on-dark: var(--red-400);
+  --text-link: var(--red-700);
+  --text-link-hover: var(--red-800);
+
+  --border-hairline: rgba(8, 8, 10, 0.14);
+  --border-strong: var(--ink-900);
+  --border-field: rgba(8, 8, 10, 0.35);
+  --border-on-dark: rgba(242, 234, 224, 0.22);
+
+  --focus-ring: var(--red-500);
+
+  --state-ok: #2e7d46;
+  --state-warn: #d98014;
+  --state-error: var(--red-700);
+  --state-info: #1f4e79;
+}

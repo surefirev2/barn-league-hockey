@@ -1,15 +1,67 @@
 ---
-
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import Hero from "../components/Hero.astro";
+import SeasonFacts from "../components/SeasonFacts.astro";
+import PhotoBand from "../components/PhotoBand.astro";
+import WhatToExpect from "../components/WhatToExpect.astro";
+import Teams from "../components/Teams.astro";
+import RegisterTeaser from "../components/RegisterTeaser.astro";
+import BrushBanner from "../components/BrushBanner.astro";
+import SiteFooter from "../components/SiteFooter.astro";
+import StickyRegister from "../components/StickyRegister.astro";
+import photoArena from "../assets/photo-arena.png";
+import photoBenchLaughs from "../assets/photo-bench-laughs.png";
+import photoHandshake from "../assets/photo-handshake.png";
+import photoFaceoff from "../assets/photo-faceoff.jpg";
+import { landing } from "../content/landing";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Barn League Hockey</title>
-  </head>
-  <body>
-    <h1>Hello World</h1>
-    <p>Barn League Hockey</p>
-  </body>
-</html>
+<BaseLayout title="Barn League Hockey">
+  <SiteHeader />
+  <main>
+    <Hero />
+    <SeasonFacts />
+    <PhotoBand
+      image={photoArena}
+      alt="Palmerston Arena"
+      objectPosition="center 40%"
+    >
+      <p class="photo-band__quote">{landing.bands.arena}</p>
+    </PhotoBand>
+    <PhotoBand
+      image={photoBenchLaughs}
+      alt="Players laughing on the bench between shifts"
+      objectPosition="center 30%"
+      size="story"
+    >
+      <p class="photo-band__quote">
+        {landing.storiesBefore}<span class="photo-band__quote-accent"
+          >{landing.storiesAccent}</span
+        >{landing.storiesAfter}
+      </p>
+    </PhotoBand>
+    <WhatToExpect />
+    <PhotoBand
+      image={photoHandshake}
+      alt="Players shaking hands after a game"
+      objectPosition="center"
+    >
+      <p class="photo-band__quote">{landing.bands.handshake}</p>
+    </PhotoBand>
+    <Teams />
+    <PhotoBand
+      image={photoFaceoff}
+      alt="Players lining up for a faceoff"
+      objectPosition="center 35%"
+    >
+      <p class="photo-band__quote">{landing.bands.faceoff}</p>
+    </PhotoBand>
+    <RegisterTeaser />
+    <BrushBanner />
+  </main>
+  <SiteFooter />
+  <StickyRegister />
+</BaseLayout>
+
+<script src="../scripts/team-preference-ui.ts"></script>

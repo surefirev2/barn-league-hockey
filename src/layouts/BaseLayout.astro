@@ -1,0 +1,33 @@
+---
+import "../styles/index.css";
+import { landing } from "../content/landing";
+
+interface Props {
+  title?: string;
+}
+
+const { title = "Barn League Hockey" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Adult rec hockey league in Palmerston. Real hockey. Real people. Real fun."
+    />
+    <title>{title}</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#register">{landing.skipLink}</a>
+    <div class="page">
+      <slot />
+    </div>
+  </body>
+</html>

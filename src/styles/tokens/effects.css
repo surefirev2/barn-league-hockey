@@ -1,0 +1,49 @@
+:root {
+  /* corners: near-square. Nothing in the brand is pill-shaped except the
+     stat rails; radii stay under 4px so panels read as printed plates. */
+  --radius-0: 0;
+  --radius-1: 2px;
+  --radius-2: 3px;
+  --radius-3: 4px;
+  --radius-pill: 999px;
+
+  --border-w-hair: 1px;
+  --border-w-1: 2px;
+  --border-w-2: 3px;
+  --border-w-heavy: 4px;
+
+  /* shadows are hard-edged offsets (screen-print feel), never soft blur clouds */
+  --shadow-plate: 3px 3px 0 rgba(8, 8, 10, 0.9);
+  --shadow-plate-red: 3px 3px 0 var(--red-800);
+  --shadow-card:
+    0 1px 0 rgba(8, 8, 10, 0.18), 0 8px 20px -12px rgba(8, 8, 10, 0.35);
+  --shadow-lift:
+    0 2px 0 rgba(8, 8, 10, 0.22), 0 18px 34px -18px rgba(8, 8, 10, 0.45);
+  --shadow-inset-field: inset 0 1px 0 rgba(8, 8, 10, 0.1);
+
+  /* protection gradient: dark photo scrim so bone type stays legible */
+  --scrim-bottom: linear-gradient(
+    to top,
+    rgba(8, 8, 10, 0.94) 0%,
+    rgba(8, 8, 10, 0.72) 38%,
+    rgba(8, 8, 10, 0) 100%
+  ); /* @kind other */
+  --scrim-full: linear-gradient(
+    to right,
+    rgba(8, 8, 10, 0.92) 0%,
+    rgba(8, 8, 10, 0.65) 55%,
+    rgba(8, 8, 10, 0.25) 100%
+  ); /* @kind other */
+  --scrim-flat: rgba(8, 8, 10, 0.62); /* @kind color */
+
+  /* grain overlay — the one texture used everywhere over flat dark fills */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E"); /* @kind other */
+  --grain-opacity: 0.16; /* @kind other */
+  --grain-opacity-light: 0.07; /* @kind other */
+
+  --ease-out: cubic-bezier(0.2, 0.7, 0.3, 1); /* @kind other */
+  --ease-in-out: cubic-bezier(0.5, 0, 0.4, 1); /* @kind other */
+  --dur-fast: 110ms; /* @kind other */
+  --dur-med: 180ms; /* @kind other */
+  --dur-slow: 320ms; /* @kind other */
+}
