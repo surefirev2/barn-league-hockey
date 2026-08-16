@@ -136,3 +136,5 @@ Product direction lives in [docs/roadmap](docs/roadmap/README.md):
 ## Development
 
 - **Pre-commit:** [`.pre-commit-config.yaml`](.pre-commit-config.yaml) runs YAML/JSON checks and basic hygiene. Install hooks with `pre-commit install`.
+
+<!-- automerge-gate smoke 2026-08-16T21:42Z -->
