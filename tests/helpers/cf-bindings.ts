@@ -14,12 +14,11 @@ export class MemoryD1 {
             this.rows.set(row.id, row);
             return { success: true };
           }
-          if (/^UPDATE registrations SET drive_file_id/i.test(normalized)) {
-            const [driveFileId, exportedAt, id] = values;
+          if (/^UPDATE registrations SET emailed_at/i.test(normalized)) {
+            const [emailedAt, id] = values;
             const row = this.rows.get(String(id));
             if (row) {
-              row.drive_file_id = String(driveFileId);
-              row.exported_at = String(exportedAt);
+              row.emailed_at = String(emailedAt);
             }
             return { success: true };
           }
@@ -73,8 +72,7 @@ function rowFromInsert(values: unknown[]): RegistrationRow {
     deposit_status: String(values[18]),
     payload_json: String(values[19]),
     pdf_r2_key: String(values[20]),
-    drive_file_id: values[21] == null ? null : String(values[21]),
-    exported_at: values[22] == null ? null : String(values[22]),
+    emailed_at: values[21] == null ? null : String(values[21]),
   };
 }
 
@@ -115,24 +113,52 @@ export class MemoryQueue {
   }
 }
 
+export type SentEmail = {
+  to: string;
+  from: string;
+  subject: string;
+  attachments: Array<{ filename?: string; type?: string }>;
+};
+
+export class MemoryEmail {
+  sent: SentEmail[] = [];
+
+  async send(message: {
+    to: string;
+    from: string;
+    subject: string;
+    attachments?: Array<{ filename?: string; type?: string }>;
+  }) {
+    this.sent.push({
+      to: message.to,
+      from: message.from,
+      subject: message.subject,
+      attachments: message.attachments ?? [],
+    });
+    return { messageId: `msg-${this.sent.length}` };
+  }
+}
+
 export function testEnv(overrides: Partial<Env> = {}): Env & {
   DB: MemoryD1;
   REGISTRATION_PDFS: MemoryR2;
   REGISTRATION_EXPORT: MemoryQueue;
+  EMAIL: MemoryEmail;
 } {
   const env = {
     DB: new MemoryD1(),
     REGISTRATION_PDFS: new MemoryR2(),
     REGISTRATION_EXPORT: new MemoryQueue(),
+    EMAIL: new MemoryEmail(),
     SEASON_ID: "2026-27",
-    GOOGLE_SYNC_MODE: "off",
-    GOOGLE_DRIVE_FOLDER_ID: "",
-    GOOGLE_REGISTRATION_SHEET_ID: "",
+    REGISTRATION_NOTIFY_EMAIL: "chutchic@gmail.com",
+    REGISTRATION_FROM_EMAIL: "registrations@barnleaguehockey.ca",
     ...overrides,
   };
   return env as Env & {
     DB: MemoryD1;
     REGISTRATION_PDFS: MemoryR2;
     REGISTRATION_EXPORT: MemoryQueue;
+    EMAIL: MemoryEmail;
   };
 }

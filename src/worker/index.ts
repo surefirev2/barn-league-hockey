@@ -1,7 +1,7 @@
 import type { Env, MessageBatch } from "./env";
-import { handleRegistrationExport } from "./google/sync";
 import { handleAdminRequest } from "./registrations/admin";
 import { handlePostRegistration } from "./registrations/handler";
+import { handleRegistrationNotify } from "./registrations/notify";
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -32,7 +32,7 @@ export default {
     env: Env,
   ): Promise<void> {
     for (const message of batch.messages) {
-      await handleRegistrationExport(env, message.body.registrationId);
+      await handleRegistrationNotify(env, message.body.registrationId);
       message.ack();
     }
   },

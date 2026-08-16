@@ -18,20 +18,36 @@ export interface RegistrationR2 {
   get(key: string): Promise<RegistrationR2Object | null>;
 }
 
+export interface EmailAttachment {
+  content: string | ArrayBuffer | ArrayBufferView;
+  filename: string;
+  type: string;
+  disposition: "attachment" | "inline";
+  contentId?: string;
+}
+
+export interface SendEmail {
+  send(message: {
+    to: string;
+    from: string;
+    subject: string;
+    text?: string;
+    html?: string;
+    attachments?: EmailAttachment[];
+  }): Promise<{ messageId: string }>;
+}
+
 export interface Env {
   ASSETS?: { fetch(request: Request): Promise<Response> };
   DB: { prepare(query: string): D1PreparedStatement };
   REGISTRATION_PDFS: RegistrationR2;
   REGISTRATION_EXPORT: RegistrationQueue;
+  EMAIL: SendEmail;
   SEASON_ID: string;
-  GOOGLE_SYNC_MODE: string;
-  GOOGLE_DRIVE_FOLDER_ID: string;
-  GOOGLE_REGISTRATION_SHEET_ID: string;
-  GOOGLE_LOCAL_DIR?: string;
+  REGISTRATION_NOTIFY_EMAIL: string;
+  REGISTRATION_FROM_EMAIL: string;
   TURNSTILE_SITE_KEY?: string;
   TURNSTILE_SECRET_KEY?: string;
-  GOOGLE_SERVICE_ACCOUNT_EMAIL?: string;
-  GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY?: string;
   ADMIN_READ_TOKEN?: string;
 }
 
@@ -43,13 +59,4 @@ export interface QueueMessage<T> {
 
 export interface MessageBatch<T> {
   messages: QueueMessage<T>[];
-}
-
-export type GoogleSyncMode = "off" | "local" | "live";
-
-export function googleSyncMode(value: string | undefined): GoogleSyncMode {
-  if (value === "local" || value === "live") {
-    return value;
-  }
-  return "off";
 }

@@ -135,7 +135,7 @@ describe("registration field dictionary", () => {
 });
 
 describe("D1 registrations migration", () => {
-  it("creates named sheet columns plus payload_json and pdf_r2_key", () => {
+  it("creates named columns plus payload_json and pdf_r2_key", () => {
     const sql = readFileSync("migrations/0001_registrations.sql", "utf8");
     expect(sql).toContain("CREATE TABLE registrations");
     expect(sql).toContain("payload_json");
@@ -144,5 +144,11 @@ describe("D1 registrations migration", () => {
     expect(sql).toContain("exported_at");
     expect(sql).toContain("season_id");
     expect(sql).not.toContain("UNIQUE");
+  });
+
+  it("renames exported_at to emailed_at and drops drive_file_id", () => {
+    const sql = readFileSync("migrations/0002_email_notify.sql", "utf8");
+    expect(sql).toContain("RENAME COLUMN exported_at TO emailed_at");
+    expect(sql).toContain("DROP COLUMN drive_file_id");
   });
 });

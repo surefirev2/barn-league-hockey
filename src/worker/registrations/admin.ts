@@ -1,4 +1,4 @@
-import { googleSyncMode, type Env } from "../env";
+import type { Env } from "../env";
 import { isUlid } from "./id";
 import { getRegistration, listSeasonRegistrations } from "./store";
 
@@ -24,16 +24,16 @@ export async function handleAdminRequest(
 
   if (
     request.method === "POST" &&
-    url.pathname === "/api/admin/registrations/export-pending"
+    url.pathname === "/api/admin/registrations/email-pending"
   ) {
-    return enqueuePendingExports(env);
+    return enqueuePendingEmails(env);
   }
 
-  const exportMatch = url.pathname.match(
-    /^\/api\/admin\/registrations\/([0-9A-HJKMNP-TV-Z]{26})\/export$/,
+  const emailMatch = url.pathname.match(
+    /^\/api\/admin\/registrations\/([0-9A-HJKMNP-TV-Z]{26})\/email$/,
   );
-  if (request.method === "POST" && exportMatch) {
-    return enqueueOneExport(env, exportMatch[1] ?? "");
+  if (request.method === "POST" && emailMatch) {
+    return enqueueOneEmail(env, emailMatch[1] ?? "");
   }
 
   const pdfMatch = url.pathname.match(PDF_PATH);
@@ -44,14 +44,10 @@ export async function handleAdminRequest(
   return new Response("Not found", { status: 404 });
 }
 
-async function enqueuePendingExports(env: Env): Promise<Response> {
-  const blocked = syncMustBeOn(env);
-  if (blocked) {
-    return blocked;
-  }
+async function enqueuePendingEmails(env: Env): Promise<Response> {
   const rows = await listSeasonRegistrations(env, env.SEASON_ID);
   const pending = rows.filter(
-    (row) => row.drive_file_id == null || row.drive_file_id === "",
+    (row) => row.emailed_at == null || row.emailed_at === "",
   );
   const enqueued: string[] = [];
   for (const row of pending) {
@@ -61,11 +57,7 @@ async function enqueuePendingExports(env: Env): Promise<Response> {
   return Response.json({ enqueued });
 }
 
-async function enqueueOneExport(env: Env, id: string): Promise<Response> {
-  const blocked = syncMustBeOn(env);
-  if (blocked) {
-    return blocked;
-  }
+async function enqueueOneEmail(env: Env, id: string): Promise<Response> {
   if (!isUlid(id)) {
     return new Response("Not found", { status: 404 });
   }
@@ -75,19 +67,6 @@ async function enqueueOneExport(env: Env, id: string): Promise<Response> {
   }
   await env.REGISTRATION_EXPORT.send({ registrationId: id });
   return Response.json({ enqueued: [id] });
-}
-
-function syncMustBeOn(env: Env): Response | null {
-  if (googleSyncMode(env.GOOGLE_SYNC_MODE) === "off") {
-    return Response.json(
-      {
-        error: "google_sync_off",
-        message: "Set GOOGLE_SYNC_MODE to local or live before enqueueing.",
-      },
-      { status: 409 },
-    );
-  }
-  return null;
 }
 
 function authorizeAdmin(request: Request, env: Env): Response | null {
@@ -131,8 +110,7 @@ async function listRegistrations(env: Env): Promise<Response> {
       spareInterest: row.spare_interest,
       depositStatus: row.deposit_status,
       pdfR2Key: row.pdf_r2_key,
-      driveFileId: row.drive_file_id,
-      exportedAt: row.exported_at,
+      emailedAt: row.emailed_at,
     })),
   });
 }

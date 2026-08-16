@@ -66,6 +66,9 @@ describe("GET /api/admin/registrations", () => {
     expect(body.registrations[0]?.teamPreference).toBe("rockets");
     expect(body.registrations[0]).not.toHaveProperty("payload_json");
     expect(body.registrations[0]).not.toHaveProperty("payloadJson");
+    expect(body.registrations[0]).toHaveProperty("emailedAt");
+    expect(body.registrations[0]).not.toHaveProperty("driveFileId");
+    expect(body.registrations[0]).not.toHaveProperty("exportedAt");
   });
 });
 
@@ -111,35 +114,14 @@ describe("GET /api/admin/registrations/:id/pdf", () => {
   });
 });
 
-describe("POST /api/admin/registrations export backfill", () => {
-  it("returns 409 when Google sync is off", async () => {
+describe("POST /api/admin/registrations email backfill", () => {
+  it("enqueues D1 rows that have not been emailed", async () => {
     const env = testEnv({ ADMIN_READ_TOKEN: ADMIN_TOKEN });
-    await submitRegistration(env);
-    const response = await worker.fetch(
-      new Request(
-        "https://barnleaguehockey.ca/api/admin/registrations/export-pending",
-        {
-          method: "POST",
-          headers: { Authorization: `Bearer ${ADMIN_TOKEN}` },
-        },
-      ),
-      env,
-    );
-    expect(response.status).toBe(409);
-    expect(env.REGISTRATION_EXPORT.messages).toEqual([]);
-  });
-
-  it("enqueues D1 rows that have no drive_file_id", async () => {
-    const env = testEnv({
-      ADMIN_READ_TOKEN: ADMIN_TOKEN,
-      GOOGLE_SYNC_MODE: "off",
-    });
     const created = await submitRegistration(env);
-    expect(env.REGISTRATION_EXPORT.messages).toEqual([]);
-    env.GOOGLE_SYNC_MODE = "local";
+    env.REGISTRATION_EXPORT.messages = [];
     const response = await worker.fetch(
       new Request(
-        "https://barnleaguehockey.ca/api/admin/registrations/export-pending",
+        "https://barnleaguehockey.ca/api/admin/registrations/email-pending",
         {
           method: "POST",
           headers: { Authorization: `Bearer ${ADMIN_TOKEN}` },
@@ -156,15 +138,12 @@ describe("POST /api/admin/registrations export backfill", () => {
   });
 
   it("enqueues a single registration by id", async () => {
-    const env = testEnv({
-      ADMIN_READ_TOKEN: ADMIN_TOKEN,
-      GOOGLE_SYNC_MODE: "local",
-    });
+    const env = testEnv({ ADMIN_READ_TOKEN: ADMIN_TOKEN });
     const created = await submitRegistration(env);
     env.REGISTRATION_EXPORT.messages = [];
     const response = await worker.fetch(
       new Request(
-        `https://barnleaguehockey.ca/api/admin/registrations/${created.id}/export`,
+        `https://barnleaguehockey.ca/api/admin/registrations/${created.id}/email`,
         {
           method: "POST",
           headers: { Authorization: `Bearer ${ADMIN_TOKEN}` },

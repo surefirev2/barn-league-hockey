@@ -14,7 +14,7 @@ The adult hockey league requires a small public website whose primary characteri
 - Cloudflare hosting;
 - player registration;
 - generation of one PDF registration record per player;
-- a human-friendly shared location where league administrators can see all registration PDFs and a consolidated registration list.
+- an operator email of each registration PDF after persist.
 
 The application is deliberately not intended to become a conventional server-rendered web application, CMS, SPA, or administration platform.
 
@@ -32,9 +32,8 @@ The application will use:
 | Structured registration storage | Cloudflare D1 |
 | Authoritative PDF storage | Cloudflare R2 |
 | PDF generation | `pdf-lib` |
-| Asynchronous export | Cloudflare Queues |
-| Human-facing document repository | Google Shared Drive |
-| Consolidated registration list | Google Sheet |
+| Asynchronous notify | Cloudflare Queues |
+| Operator PDF delivery | Cloudflare Email Sending |
 | Source control | GitHub |
 | CI/CD | GitHub Actions + Wrangler |
 | Production deployment trigger | Merge/push to `main` |
@@ -65,19 +64,20 @@ The system has two layers:
                         ▼
                     PROJECTION
              ┌────────────────────────┐
-             │ Google Shared Drive    │
+             │ Cloudflare Email       │
+             │ Sending                │
              │                        │
-             │ PDFs + Google Sheet    │
+             │ PDF to operator inbox  │
              └────────────────────────┘
 ```
 
 **D1 and R2 are the system of record.**
 
-Google Drive is an operational projection for humans.
+Email is an operational projection for humans.
 
-The application must be able to reconstruct the Google Drive representation from D1 and R2 without loss of authoritative data.
+The application must be able to resend the PDF from D1 and R2 without loss of authoritative data.
 
-Google Drive must therefore never be required to successfully complete a player registration.
+Email Sending must therefore never be required to successfully complete a player registration.
 
 ## Static Site Architecture
 
@@ -149,12 +149,12 @@ POST /api/registrations
           │
           ├──────────────► success response
           │
-          └──────────────► export queue
+          └──────────────► notify queue
 ```
 
 A registration is considered complete when its authoritative D1 record and R2 PDF have been successfully persisted.
 
-Google synchronization is explicitly outside this success boundary.
+Email notify is explicitly outside this success boundary.
 
 Exact form fields, waiver semantics, signatures, duplicate-registration policy, validation rules, confirmation UX, and similar concerns are implementation details rather than architectural decisions.
 
@@ -180,88 +180,36 @@ The player's name may be included for convenience, but uniqueness must not depen
 
 The R2 bucket remains private.
 
-## Google Shared Drive Projection
+## Email Sending Projection
 
-A Google Shared Drive will contain a dedicated application-managed area such as:
+After authoritative persist, a queue consumer emails the R2 PDF to the configured operator address.
 
-```text
-Adult Hockey League/
-└── Registration/
-    └── 2026-27/
-        ├── PDFs/
-        │   ├── Smith, Bob - 01K....pdf
-        │   ├── Brown, Sally - 01K....pdf
-        │   └── ...
-        │
-        └── Registrations
-            [Google Sheet]
-```
-
-Google's Drive API supports file creation in Shared Drives and requires Shared Drive-aware operations to specify support appropriately, including `supportsAllDrives=true` for relevant file operations.
-
-### Google Authentication
-
-Create a dedicated Google Cloud service account for the application.
-
-Grant that identity access only to the registration folder and spreadsheet required by the application.
-
-Google documents direct sharing of a specific Drive folder or Sheet with a service account as an alternative to administrative/domain-wide delegation.
-
-The Worker will authenticate to the Google APIs using service-account credentials.
-
-Sensitive key material is stored as a **Cloudflare Worker secret**, not committed to Git.
-
-Expected configuration resembles:
+Attachment filenames are optimized for humans:
 
 ```text
-Non-secret configuration
-------------------------
-GOOGLE_DRIVE_FOLDER_ID
-GOOGLE_REGISTRATION_SHEET_ID
-
-Cloudflare secrets
-------------------
-GOOGLE_SERVICE_ACCOUNT_EMAIL
-GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
+Smith, Bob - 01K....pdf
+Brown, Sally - 01K....pdf
 ```
 
-Whether email is treated as a secret is not materially important; the private key is.
+The immutable registration ID remains in the filename and email subject for reconciliation.
 
-## Google Sheet Strategy
+From: `registrations@barnleaguehockey.ca` (must belong to an onboarded Email Service domain).
+To: the operator inbox (`REGISTRATION_NOTIFY_EMAIL`).
 
-The Google Sheet is a **materialized view of D1**, not an independent database.
+The Worker authenticates via the `send_email` binding. No Google credentials.
 
-We explicitly reject:
+## Operator list
+
+The Google Sheet is not part of this system. Operators list the current season from D1:
 
 ```text
-registration
-    │
-    └── append one Sheet row
+GET /api/admin/registrations
+GET /api/admin/registrations/:id/pdf
 ```
 
-as the core synchronization model.
+A future CSV or `.xlsx` export can be generated from D1 if desired.
 
-Instead:
-
-```text
-D1 registrations
-       │
-       ▼
- build complete table
-       │
-       ▼
- overwrite/update Sheet dataset
-```
-
-At adult-league scale, regenerating the registration table is cheap and substantially easier to reason about.
-
-It also gives administrators a predictable invariant:
-
-> The Google Sheet represents the current authoritative registration set in D1.
-
-A future CSV or `.xlsx` export can be generated from exactly the same projection code if desired.
-
-## Asynchronous Export
+## Asynchronous Notify
 
 A successful registration places a small message onto a Cloudflare Queue:
 
@@ -285,34 +233,23 @@ Queue event
     ├── retrieve registration from D1
     ├── retrieve PDF from R2
     │
-    ├── ensure PDF exists in Shared Drive
+    ├── EMAIL.send PDF attachment
     │
-    └── refresh registration Sheet from D1
+    └── set emailed_at
 ```
 
-Synchronization must be **idempotent** because queue messages can be retried.
-
-Google Drive files should therefore carry or otherwise be discoverable by the immutable registration ID.
-
-For example:
-
-```text
-Drive appProperties:
-    registrationId = 01K...
-```
-
-or an equivalent deterministic lookup mechanism.
+Repeating a notify may send a second email (operator resend is explicit). The D1/R2 records remain unique.
 
 ## Failure Model
 
-A Google API failure:
+An Email Sending failure:
 
 ```text
 Player registration
         │
         ├── D1 ✓
         ├── R2 ✓
-        └── Google ✗
+        └── Email ✗
 ```
 
 must result in:
@@ -321,7 +258,7 @@ must result in:
 Player: SUCCESS
 
 Queue:
-    retry Google synchronization
+    retry email notify
 ```
 
 not:
@@ -330,7 +267,7 @@ not:
 Player: ERROR
 ```
 
-The human-facing Drive projection may temporarily lag the authoritative database.
+The operator inbox may temporarily lag the authoritative database.
 
 That trade-off is intentional.
 
@@ -354,7 +291,8 @@ Recommended initial layout:
 │       ├── index.ts
 │       ├── registrations/
 │       ├── pdf/
-│       └── google-drive/
+│       └── registrations/
+│           └── notify.ts
 │
 ├── migrations/
 │   └── 0001_initial.sql
@@ -465,7 +403,7 @@ Cloudflare recommends storing the API token in CI's secret store rather than the
 Runtime secrets belong in Cloudflare:
 
 ```text
-GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
+ADMIN_READ_TOKEN
 TURNSTILE_SECRET
 ...
 ```
@@ -482,29 +420,25 @@ Infrastructure remains serverless and operationally light.
 
 There is no application server to patch or administer.
 
-Google Drive gives nontechnical league administrators a familiar interface.
+Email Sending gives league administrators the PDF in a familiar inbox.
 
-A Google outage cannot prevent registration.
+An Email Service outage cannot prevent registration.
 
 D1 permits future exports/reporting without parsing PDFs.
 
-R2 ensures registration documents are not dependent on Google Drive for persistence.
+R2 ensures registration documents are not dependent on email for persistence.
 
-The Google Drive projection can be regenerated at any time.
+The operator email can be resent from D1 and R2 at any time.
 
 Local development can reproduce the relevant Cloudflare bindings.
 
 ### Negative
 
-The system contains duplicate storage of PDFs: R2 and Google Drive.
-
-Google Drive synchronization is eventually consistent.
+The operator inbox is eventually consistent with D1/R2.
 
 A queue introduces another Cloudflare primitive.
 
-Google service-account credentials require initial administrative setup.
-
-There is a small amount of integration code for Google OAuth/Drive/Sheets.
+Email Sending requires domain onboarding (SPF/DKIM/DMARC) and a paid Workers plan.
 
 These costs are accepted because they keep the player-facing path reliable while providing the desired administrative workflow.
 
@@ -521,7 +455,7 @@ This ADR does not establish:
 - administrator authentication;
 - an admin dashboard;
 - roster management;
-- email infrastructure;
+- player confirmation email;
 - registration field semantics;
 - waiver/legal language;
 - SSR;
@@ -546,7 +480,7 @@ pdf-lib
    +
 Queue
    +
-Google Shared Drive projection
+Email Sending projection
 ```
 
-Keep **Cloudflare authoritative**, **Google human-friendly**, and **GitHub authoritative for delivery**.
+Keep **Cloudflare authoritative**, **email human-facing**, and **GitHub authoritative for delivery**.
