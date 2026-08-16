@@ -8,8 +8,7 @@ Every completed registration must result in:
 
 1. an authoritative structured registration record;
 2. an authoritative PDF registration document;
-3. eventual availability of the PDF in the league's Google Shared Drive; and
-4. inclusion in a consolidated Google Sheet registration list.
+3. eventual delivery of the PDF to the operator inbox via Cloudflare Email Sending.
 
 The system should strongly favour static content and straightforward operations over application sophistication.
 
@@ -39,7 +38,7 @@ Do not introduce:
 
 D1 and R2 preserve authoritative registration information.
 
-Google Drive exists for administrator convenience.
+Email exists for administrator convenience.
 
 ### Repository-driven
 
@@ -92,20 +91,19 @@ The data model should preserve enough structured information to support:
 ```text
 registration listing
 CSV/export generation
-Google Sheet generation
 lookup by registration ID
 operational reconciliation
 ```
 
 without extracting information from PDFs.
 
-### Shared Drive Export
+### Operator email
 
-After authoritative persistence, the application shall enqueue synchronization work.
+After authoritative persistence, the application shall enqueue notify work.
 
-A background consumer shall make the registration PDF available in the configured Google Shared Drive.
+A background consumer shall email the registration PDF to the configured operator address.
 
-Drive filenames may be optimized for humans:
+Attachment filenames may be optimized for humans:
 
 ```text
 Last, First - Registration ID.pdf
@@ -113,21 +111,13 @@ Last, First - Registration ID.pdf
 
 The immutable registration ID must nevertheless remain available for reconciliation.
 
-### Registration Sheet
-
-A Google Sheet in the same Shared Drive shall provide administrators with the global registration list.
-
-The Sheet is generated from authoritative D1 data.
-
-The system should prefer replacing/updating the complete dataset over incrementally treating Sheet rows as database records.
-
-Google's Sheets API supports programmatic reading and modification of spreadsheet data.
+The operator list is D1 via the admin API, not a Google Sheet.
 
 ## Reliability Requirements
 
 ### Registration success
 
-Google Drive availability shall not be part of the synchronous registration success criteria.
+Email Sending availability shall not be part of the synchronous registration success criteria.
 
 Required:
 
@@ -142,23 +132,18 @@ registration succeeds
 Not required synchronously:
 
 ```text
-Google Drive succeeds
-Google Sheets succeeds
+Email send succeeds
 ```
 
-### Export retry
+### Notify retry
 
-Failed Google synchronization shall be retryable without player action.
+Failed email notify shall be retryable without player action.
 
-Cloudflare Queues provides retry/delivery mechanisms and is available on both Workers Free and Paid plans.
+Cloudflare Queues provides retry/delivery mechanisms.
 
 ### Idempotency
 
-Repeating an export operation must not create logically duplicate registrations.
-
-Drive synchronization shall use registration IDs to identify previously exported data.
-
-Sheet reconstruction from D1 shall be idempotent.
+Repeating a notify may send another email. D1 and R2 records remain unique. Operator resend is explicit (`POST .../:id/email`).
 
 ## Security Requirements
 
@@ -166,13 +151,7 @@ Registration PDFs and structured registration data are private.
 
 The R2 registration bucket shall not be public.
 
-The Google Shared Drive shall be shared only with appropriate league administrators plus the dedicated service account.
-
 Runtime secrets shall not be stored in Git.
-
-The Google service account shall receive access only to resources necessary for registration synchronization.
-
-Google explicitly supports granting service accounts direct access to individual Drive folders and Sheets without requiring domain-wide delegation.
 
 Appropriate basic abuse protection shall be applied to public registration submission.
 
@@ -183,13 +162,12 @@ League administrators shall not need Cloudflare knowledge for normal access to c
 Their normal workflow should be:
 
 ```text
-Google Drive
+Inbox
    │
-   ├── browse PDFs
-   └── open registration Sheet
+   └── open attached PDF
 ```
 
-Cloudflare administration remains a technical/operator concern.
+Cloudflare administration remains a technical/operator concern. The admin API lists D1 rows and downloads PDFs.
 
 ## Performance Requirements
 
@@ -213,7 +191,7 @@ and obtain a useful local development environment without creating production cl
 
 D1 and R2 shall have local equivalents during development using Cloudflare's local tooling.
 
-Google synchronization shall be abstracted sufficiently that routine local development does not require a live Google account.
+Email notify shall be unit-tested with a mock `EMAIL.send`. Local Wrangler may not serialize binary PDF attachments.
 
 ## Deployment Requirements
 
@@ -238,11 +216,10 @@ The product is considered viable when:
 - a successful submission creates a D1 registration record;
 - a successful submission creates a valid PDF using `pdf-lib`;
 - the canonical PDF is stored privately in R2;
-- Google synchronization occurs outside the request path;
-- the PDF eventually appears in the designated Shared Drive;
-- the consolidated Google Sheet reflects D1 registration data;
-- a transient Google API failure does not make an otherwise valid player registration fail;
-- Google synchronization can safely retry;
+- email notify occurs outside the request path;
+- the PDF eventually arrives in the operator inbox;
+- a transient Email Sending failure does not make an otherwise valid player registration fail;
+- email notify can safely retry;
 - the site can be developed with local Cloudflare resources;
 - pull requests automatically lint, typecheck, test, and build;
 - merging to `main` deploys production through GitHub Actions;
@@ -254,7 +231,7 @@ Possible future work includes:
 
 ```text
 payments
-email
+player confirmation email
 admin UI
 CSV/XLSX scheduled exports
 teams and rosters

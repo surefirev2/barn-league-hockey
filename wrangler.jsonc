@@ -18,11 +18,17 @@
   ],
   "vars": {
     "SEASON_ID": "2026-27",
-    "GOOGLE_SYNC_MODE": "live",
-    "GOOGLE_DRIVE_FOLDER_ID": "1AxyjxqI1U8qioroPj-EAuQVZg4HqX_LY",
-    "GOOGLE_REGISTRATION_SHEET_ID": "1TZAVPh5E-CohpsQKfRoInAq0nEDWcx5YNKiYgV1M-yA",
+    "REGISTRATION_NOTIFY_EMAIL": "chutchic@gmail.com",
+    "REGISTRATION_FROM_EMAIL": "registrations@barnleaguehockey.ca",
     "TURNSTILE_SITE_KEY": "",
   },
+  "send_email": [
+    {
+      "name": "EMAIL",
+      "allowed_sender_addresses": ["registrations@barnleaguehockey.ca"],
+      "allowed_destination_addresses": ["chutchic@gmail.com"],
+    },
+  ],
   "d1_databases": [
     {
       "binding": "DB",

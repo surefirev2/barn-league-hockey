@@ -19,7 +19,7 @@ A player on a phone, or a parent/partner filling it in at the kitchen table, sho
 3. Complete every field required for rostering, insurance, and the $100 deposit.
 4. Leave with a registration ID and a clear "what happens next."
 
-League admins should later find the same record as a PDF plus a Sheet row. That pipeline is an ADR concern. This spec only defines the player-facing page and the data the form must capture.
+League admins should later receive the same record as a PDF in the operator inbox. That pipeline is an ADR concern. This spec only defines the player-facing page and the data the form must capture.
 
 ---
 
@@ -222,7 +222,7 @@ On `POST /api/registrations` success, replace the form with a confirmation panel
 - Contact: `barnleaguehockey@gmail.com`
 - Link: `Register someone else` (resets the form)
 
-Do **not** promise a confirmation email. Email is deferred in the PRD. Everything the player needs must be on this screen.
+Do **not** promise a confirmation email. Player confirmation email is deferred in the PRD. Everything the player needs must be on this screen.
 
 ---
 
@@ -381,7 +381,7 @@ Letterhead:
 - Team path → that team's colors and name (`ROCKETS BARN LEAGUE HOCKEY`, etc.)
 - Individual → league letterhead (`BARN LEAGUE HOCKEY`)
 
-Filename in Drive (ADR): `Last, First - {registrationId}.pdf`
+Attachment filename: `Last, First - {registrationId}.pdf`
 Object in R2: identifier-first, season prefix.
 
 The PDF is a legal-ish record, not a flyer. High contrast, no photo hero, no grain. Include the registration ID in the header of every page.
@@ -446,7 +446,7 @@ Do not add, even if it would look finished:
 - Account creation
 - Live schedule, standings, or roster pages
 - Admin UI
-- Email send
+- Player confirmation email
 - A separate insurance form step
 - CMS-managed pages
 - Dark-mode toggle as a v1 requirement (the page is already dark marketing + light form)

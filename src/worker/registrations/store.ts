@@ -1,13 +1,5 @@
 import type { Env } from "../env";
-import {
-  ABILITY_LABELS,
-  DEPOSIT_LABELS,
-  HIGHEST_LEVEL_LABELS,
-  PARTICIPATION_LABELS,
-  POSITION_LABELS,
-  TEAM_PATH_LABELS,
-  type ValidatedRegistration,
-} from "./schema";
+import type { ValidatedRegistration } from "./schema";
 
 export type RegistrationRow = {
   id: string;
@@ -31,8 +23,7 @@ export type RegistrationRow = {
   deposit_status: string;
   payload_json: string;
   pdf_r2_key: string;
-  drive_file_id: string | null;
-  exported_at: string | null;
+  emailed_at: string | null;
 };
 
 const INSERT_SQL = `INSERT INTO registrations (
@@ -40,8 +31,8 @@ const INSERT_SQL = `INSERT INTO registrations (
   date_of_birth, phone, email, emergency_name, emergency_phone, city,
   postal_code, highest_level, primary_position, ability_rating,
   participation, spare_interest, deposit_status, payload_json,
-  pdf_r2_key, drive_file_id, exported_at
-) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  pdf_r2_key
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
 export async function insertRegistration(
   env: Env,
@@ -77,8 +68,6 @@ export async function insertRegistration(
       payload.depositStatus,
       JSON.stringify(payload),
       row.pdfR2Key,
-      null,
-      null,
     )
     .run();
 }
@@ -104,47 +93,12 @@ export async function listSeasonRegistrations(
   return result.results;
 }
 
-export async function markExported(
+export async function markEmailed(
   env: Env,
   id: string,
-  driveFileId: string,
-  exportedAt: string,
+  emailedAt: string,
 ): Promise<void> {
-  await env.DB.prepare(
-    "UPDATE registrations SET drive_file_id = ?, exported_at = ? WHERE id = ?",
-  )
-    .bind(driveFileId, exportedAt, id)
+  await env.DB.prepare("UPDATE registrations SET emailed_at = ? WHERE id = ?")
+    .bind(emailedAt, id)
     .run();
-}
-
-export function sheetRow(row: RegistrationRow): string[] {
-  return [
-    row.id,
-    row.submitted_at,
-    TEAM_PATH_LABELS[row.team_preference as keyof typeof TEAM_PATH_LABELS] ??
-      row.team_preference,
-    row.first_name,
-    row.last_name,
-    row.date_of_birth,
-    row.phone,
-    row.email,
-    row.emergency_name,
-    row.emergency_phone,
-    row.city,
-    row.postal_code,
-    HIGHEST_LEVEL_LABELS[
-      row.highest_level as keyof typeof HIGHEST_LEVEL_LABELS
-    ] ?? row.highest_level,
-    POSITION_LABELS[row.primary_position as keyof typeof POSITION_LABELS] ??
-      row.primary_position,
-    ABILITY_LABELS[row.ability_rating as keyof typeof ABILITY_LABELS] ??
-      row.ability_rating,
-    PARTICIPATION_LABELS[
-      row.participation as keyof typeof PARTICIPATION_LABELS
-    ] ?? row.participation,
-    row.spare_interest,
-    DEPOSIT_LABELS[row.deposit_status as keyof typeof DEPOSIT_LABELS] ??
-      row.deposit_status,
-    row.drive_file_id ?? "",
-  ];
 }

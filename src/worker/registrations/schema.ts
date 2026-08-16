@@ -104,28 +104,6 @@ export const DEPOSIT_LABELS: Record<DepositStatus, string> = {
   pending: "Pending",
 };
 
-export const SHEET_COLUMNS = [
-  "ID",
-  "submitted at",
-  "team",
-  "first",
-  "last",
-  "DOB",
-  "phone",
-  "email",
-  "emergency name",
-  "emergency phone",
-  "city",
-  "postal",
-  "highest level",
-  "primary position",
-  "ability",
-  "participation",
-  "spare interest",
-  "deposit",
-  "Drive file id",
-] as const;
-
 export type RegistrationInput = {
   teamPreference?: unknown;
   firstName?: unknown;
@@ -219,7 +197,7 @@ export function pdfR2Key(seasonId: string, id: string): string {
   return `registrations/${seasonId}/${id}.pdf`;
 }
 
-export function drivePdfFilename(
+export function pdfFilename(
   lastName: string,
   firstName: string,
   id: string,
