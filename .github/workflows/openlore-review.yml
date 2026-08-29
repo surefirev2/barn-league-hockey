@@ -27,7 +27,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           persist-credentials: false
 
-      - uses: clay-good/OpenLore/.github/actions/openlore-review@4dbbb860f85a684b5e09e5621232c110bbfa50e2 # v2.2.0
+      - uses: clay-good/OpenLore/.github/actions/openlore-review@6f12e93ac819a88f84eee9f0685c852f9a04532a # v3.0.1
         with:
           head: ${{ github.event.pull_request.head.sha }}
           analyze: 'true'
